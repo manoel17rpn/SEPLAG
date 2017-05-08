@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">SEPLAG</string>
+
+    <string-array name="activities">
+        <item>Selecione uma Atividade*</item>
+        <item >Remoção de Entulhos</item>
+        <item >Varrição</item>
+        <item >Pintura de meio-fio</item>
+        <item >Capinação</item>
+    </string-array>
+</resources>

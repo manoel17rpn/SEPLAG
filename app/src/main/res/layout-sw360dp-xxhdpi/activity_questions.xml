@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_questions"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="br.com.seplag.view.QuestionsActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/my_toolbar"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:text="Educação"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView"
+            android:textSize="42sp"
+            android:textStyle="normal|bold" />
+
+        <Button
+            android:text="Mais professores"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="32dp"
+            android:id="@+id/answer1"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:background="@drawable/custom_selector_green"
+            android:padding="4dp"/>
+
+        <Button
+            android:text="Mais vagas de creches"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:id="@+id/answer2"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:background="@drawable/custom_selector_blue"
+            android:padding="4dp"
+            android:layout_marginTop="16dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:text="Mais escolas"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:id="@+id/answer3"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:background="@drawable/custom_selector_green"
+            android:padding="4dp"
+            android:layout_marginTop="16dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:text="Mais merenda"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:id="@+id/answer4"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:background="@drawable/custom_selector_blue"
+            android:padding="4dp"
+            android:layout_marginTop="16dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+    </LinearLayout>
+
+</RelativeLayout>
