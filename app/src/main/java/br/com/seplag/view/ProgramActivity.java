@@ -1,31 +1,53 @@
 package br.com.seplag.view;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+
+import org.w3c.dom.Text;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Map;
 
 import br.com.seplag.R;
 import br.com.seplag.adapters.SpinnerAdapter;
 import br.com.seplag.controller.ProgramController;
 import br.com.seplag.helper.ArrayHelper;
+import br.com.seplag.helper.InternetHelper;
+import br.com.seplag.helper.UserSessionHelper;
 import br.com.seplag.model.ProgramModel;
+
+import static android.R.attr.bitmap;
 
 public class ProgramActivity extends AppCompatActivity {
     private Spinner activities;
@@ -34,13 +56,27 @@ public class ProgramActivity extends AppCompatActivity {
     private EditText comment;
     private EditText referencepoint;
     private Button bt_program;
+    private Button bt_photo;
     private ArrayHelper arrayHelper = new ArrayHelper();
     private ProgramModel program;
+    private Drawer result;
+    private UserSessionHelper session;
+    private String userName;
+    private String userScore;
+    private String userOffice;
+    private InternetHelper internet;
+    private String image_encode;
+    private Bitmap bitmap;
+    private int PICK_IMAGE_REQUEST = 1;
+    private Uri filePath;
+    private TextView tv_image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_program);
+
+        internet  = new InternetHelper();
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitle("Nome do Programa");
@@ -55,8 +91,11 @@ public class ProgramActivity extends AppCompatActivity {
         comment = (EditText) findViewById(R.id.user_comment);
         street = (EditText) findViewById(R.id.street);
         bt_program = (Button) findViewById(R.id.bt_program);
+        bt_photo = (Button) findViewById(R.id.photo);
+        tv_image = (TextView) findViewById(R.id.success_photo);
 
-        Intent intent = getIntent();
+
+        final Intent intent = getIntent();
         Bundle params = intent.getExtras();
 
         if(params != null){
@@ -79,77 +118,208 @@ public class ProgramActivity extends AppCompatActivity {
         bt_program.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String neighborhood = neighborhoods.getSelectedItem().toString();
-                String activite = activities.getSelectedItem().toString();
-                String reference_point = referencepoint.getText().toString();
-                String street_name = street.getText().toString();
-                String user_comment = comment.getText().toString();
 
-                ProgramController controller = new ProgramController();
+                if(internet.TestConnection(ProgramActivity.this)) {
 
-                if(!neighborhood.equals("Selecione um Bairro*")){
-                    if(!activite.equals("Selecione uma Atividade*")){
-                        if(!street_name.isEmpty()){
-                            program.setUser_id(1);
-                            program.setService_program(activite);
-                            program.setName_neighborhood(neighborhood);
-                            program.setName_street(street_name);
-                            if(reference_point.isEmpty()){
-                                program.setReference_point("");
-                            }else {
-                                program.setReference_point(reference_point);
-                            }
+                    String neighborhood = neighborhoods.getSelectedItem().toString();
+                    String activite = activities.getSelectedItem().toString();
+                    String reference_point = referencepoint.getText().toString();
+                    String street_name = street.getText().toString();
+                    String user_comment = comment.getText().toString();
 
-                            if(user_comment.isEmpty()){
-                                program.setUser_comment("");
-                            }else{
-                                program.setUser_comment(user_comment);
-                            }
+                    ProgramController controller = new ProgramController();
 
-                            controller.CreateProgram(ProgramActivity.this, program, new ProgramController.VolleyCallback() {
-                                @Override
-                                public void onSuccess(String result) {
-                                    AlertDialog alertConnection;
-
-                                    AlertDialog.Builder builderConnection = new AlertDialog.Builder(ProgramActivity.this);
-                                    builderConnection.setTitle(getResources().getString(R.string.app_name));
-                                    builderConnection.setMessage("Obrigado pela sua contribuição, ele é muito importante para" +
-                                            " Caruaru!");
-                                    builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent intent = new Intent(ProgramActivity.this, MainActivity.class);
-                                            startActivity(intent);
-                                            finish();
-                                        }
-                                    });
-                                    alertConnection = builderConnection.create();
-                                    alertConnection.show();
+                    if (!neighborhood.equals("Selecione um Bairro*")) {
+                        if (!activite.equals("Selecione uma Atividade*")) {
+                            if (!street_name.isEmpty()) {
+                                program.setUser_id(1);
+                                program.setService_program(activite);
+                                program.setName_neighborhood(neighborhood);
+                                program.setName_street(street_name);
+                                if (reference_point.isEmpty()) {
+                                    program.setReference_point("");
+                                } else {
+                                    program.setReference_point(reference_point);
                                 }
 
-                                @Override
-                                public void onFailed(int result, String menssager) {
-                                    if(result == 0){
-                                        Toast.makeText(ProgramActivity.this, "Tempo expirado, verifique" +
-                                                "sua internet e tente novamente...",
-                                                Toast.LENGTH_SHORT).show();
+                                if (user_comment.isEmpty()) {
+                                    program.setUser_comment("");
+                                } else {
+                                    program.setUser_comment(user_comment);
+                                }
+
+                                if(image_encode.isEmpty()){
+                                    program.setImage("");
+                                }else{
+                                    program.setImage(image_encode);
+                                }
+
+                                controller.CreateProgram(ProgramActivity.this, program, new ProgramController.VolleyCallback() {
+                                    @Override
+                                    public void onSuccess(String result) {
+                                        AlertDialog alertConnection;
+
+                                        AlertDialog.Builder builderConnection = new AlertDialog.Builder(ProgramActivity.this);
+                                        builderConnection.setTitle(getResources().getString(R.string.app_name));
+                                        builderConnection.setMessage("Obrigado pela sua contribuição, ele é muito importante para" +
+                                                " Caruaru!");
+                                        builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent intent = new Intent(ProgramActivity.this, MainActivity.class);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        });
+                                        alertConnection = builderConnection.create();
+                                        alertConnection.show();
                                     }
-                                }
-                            });
-                        }else{
-                            Toast.makeText(ProgramActivity.this, "Por favor, insira o nome da rua...", Toast.LENGTH_LONG).show();
-                        }
-                    }else{
-                        Toast.makeText(ProgramActivity.this, "Por favor, selecione a atividade que você deseja...",
-                                Toast.LENGTH_LONG).show();
-                    }
-                }else{
-                    Toast.makeText(ProgramActivity.this, "Por favor selecione o bairro...", Toast.LENGTH_LONG).show();
-                }
 
+                                    @Override
+                                    public void onFailed(int result, String menssager) {
+                                        if (result == 0) {
+                                            CreateDialog(ProgramActivity.this, "Tempo expirado, verifique" +
+                                                    "sua internet e tente novamente...");
+                                        }
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(ProgramActivity.this, "Por favor, insira o nome da rua...", Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Toast.makeText(ProgramActivity.this, "Por favor, selecione a atividade que você deseja...",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Toast.makeText(ProgramActivity.this, "Por favor selecione o bairro...", Toast.LENGTH_LONG).show();
+                    }
+                } else{
+                    CreateDialog(ProgramActivity.this, "Sem conexão com internet, por favor conecte-se...");
+                }
             }
         });
 
+        session = new UserSessionHelper(this);
+        Map<String, String> mapUser = session.getUserDetails();
+        userName = mapUser.get("Name");
+        userScore = mapUser.get("Score");
+        userOffice = mapUser.get("Office");
+
+        AccountHeader headerResult = new AccountHeaderBuilder()
+                .withActivity(this)
+                .withHeaderBackground(R.color.colorPrimary)
+                .withOnlySmallProfileImagesVisible(false)
+                .addProfiles(
+                        new ProfileDrawerItem().withName(userName).withEmail(userOffice)
+                                .withIcon(getResources().getDrawable(R.drawable.business))
+                ).build();
+
+        result = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(myToolbar)
+                .withSavedInstance(savedInstanceState)
+                .withSelectedItem(0)
+                .withAccountHeader(headerResult)
+                .withActionBarDrawerToggle(true)
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+
+                        if(position == 3){
+                            result.closeDrawer();
+                            Toast.makeText(ProgramActivity.this, "Como Funciona", Toast.LENGTH_SHORT).show();
+                            //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                            //startActivity(intent);
+                        }
+
+                        if(position == 4){
+                            result.closeDrawer();
+                            Toast.makeText(ProgramActivity.this, "Prêmios", Toast.LENGTH_SHORT).show();
+                            //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                            //startActivity(intent);
+                        }
+
+                        if(position == 5){
+                            result.closeDrawer();
+                            Toast.makeText(ProgramActivity.this, "Sobre", Toast.LENGTH_SHORT).show();
+                            //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                            //startActivity(intent);
+                        }
+
+                        if(position == 6){
+                            session.logoutUser();
+                            result.closeDrawer();
+                            Intent intent = new Intent(ProgramActivity.this, LoginActivity.class);
+                            startActivity(intent);
+                        }
+
+                        return true;
+                    }
+                }).build();
+
+        result.addItem(new PrimaryDrawerItem().withName("Pontos").withBadge(userScore));
+        result.addItem(new DividerDrawerItem());
+        result.addItem(new PrimaryDrawerItem().withName("Como Funciona?"));
+        result.addItem(new PrimaryDrawerItem().withName("Prêmios"));
+        result.addItem(new PrimaryDrawerItem().withName("Sobre"));
+        result.addItem(new PrimaryDrawerItem().withName("Sair"));
+
+        bt_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showFileChooser();
+            }
+        });
+
+    }
+
+    private void showFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            filePath = data.getData();
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                image_encode = getStringImage(bitmap);
+                tv_image.setVisibility(View.VISIBLE);
+                tv_image.setText("Imagem carregada com Sucesso!");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public String getStringImage(Bitmap bmp){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return encodedImage;
+    }
+
+    public void CreateDialog(Context mContext, String text){
+        final AlertDialog alertConnection;
+
+        AlertDialog.Builder builderConnection = new AlertDialog.Builder(mContext);
+        builderConnection.setTitle(getResources().getString(R.string.app_name));
+        builderConnection.setMessage(text);
+        builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertConnection = builderConnection.create();
+        alertConnection.show();
     }
 
 }

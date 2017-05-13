@@ -15,7 +15,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <ScrollView
@@ -78,7 +78,9 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:id="@+id/reference_point"
-                    android:hint="Ponto de referência" />
+                    android:hint="Ponto de referência"
+                    android:inputType="textCapSentences"
+                    android:imeOptions="actionNext"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -91,24 +93,49 @@
 
                 <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="75dp"
                     android:gravity="left|top"
                     android:id="@+id/user_comment"
+                    android:inputType="textCapSentences"
+                    android:imeOptions="actionDone"
                     android:hint="Há algo que você queira acrescentar?" />
             </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
     </ScrollView>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/success_photo"
+        android:visibility="gone"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/scroll"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:id="@+id/photo"
+        android:text="Selecionar Imagem"
+        android:layout_below="@+id/success_photo"
+        android:background="@drawable/custom_selector_blue"
+        android:textColor="#fff"/>
+
     <Button
         android:id="@+id/bt_program"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/scroll"
+        android:layout_below="@+id/photo"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/custom_selector_green"
         android:text="Contribuir"
         android:textColor="#fff" />

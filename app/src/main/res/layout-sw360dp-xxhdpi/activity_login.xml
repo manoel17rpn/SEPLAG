@@ -54,6 +54,7 @@
                     android:maxLength="11"
                     android:digits="1234567890"
                     android:maxLines="1"
+                    android:imeOptions="actionDone"
                     android:inputType="phone"/>
             </android.support.design.widget.TextInputLayout>
 

@@ -33,12 +33,16 @@ public class UserSessionHelper {
     // User name (make variable public to access from outside)
     public static final String KEY_NAME = "Name";
 
+    public static final String KEY_ID = "ID";
+
     // Email address (make variable public to access from outside)
     public static final String KEY_PHONE = "Phone";
 
     public static final String KEY_SCORE = "Score";
 
     public static final String KEY_NEIGHBORHOOD = "Neighborhood";
+
+    public static final String KEY_OFFICE = "Office";
 
     // Constructor
     public UserSessionHelper(Context context){
@@ -48,7 +52,7 @@ public class UserSessionHelper {
     }
 
     //Create login session
-    public void createUserLoginSession(String name, String phone, String neighborhood, int score){
+    public void createUserLoginSession(String name, String phone, String neighborhood, int score, int id, String office){
         // Storing login value as TRUE
         editor.putBoolean(IS_USER_LOGIN, true);
 
@@ -62,37 +66,13 @@ public class UserSessionHelper {
 
         editor.putInt(KEY_SCORE, score);
 
+        editor.putInt(KEY_ID, id);
+
+        editor.putString(KEY_OFFICE, office);
+
         // commit changes
         editor.commit();
     }
-
-    /**
-     * Check login method will check user login status
-     * If false it will redirect user to login page
-     * Else do anything
-     * */
-    public boolean checkLogin(){
-        // Check login status
-        if(!this.isUserLoggedIn()){
-
-            // user is not logged in redirect him to Login Activity
-            Intent i = new Intent(_context, MainActivity.class);
-
-            // Closing all the Activities from stack
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-            // Add new Flag to start new Activity
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            // Staring Login Activity
-            _context.startActivity(i);
-
-            return true;
-        }
-        return false;
-    }
-
-
 
     /**
      * Get stored session data
@@ -110,7 +90,11 @@ public class UserSessionHelper {
 
         user.put(KEY_NEIGHBORHOOD, pref.getString(KEY_NEIGHBORHOOD, null));
 
+        user.put(KEY_OFFICE, pref.getString(KEY_OFFICE, null));
+
         user.put(KEY_SCORE, Integer.toString(pref.getInt(KEY_SCORE, 0)));
+
+        user.put(KEY_ID, Integer.toString(pref.getInt(KEY_ID, 0)));
 
         // return user
         return user;

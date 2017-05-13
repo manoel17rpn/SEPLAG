@@ -7,6 +7,7 @@ package br.com.seplag.model;
 public class GameAuxModel {
     private int aux_id;
     private int user_id;
+    private int options_id;
     private String name_list;
     private String user_answers;
 
@@ -40,5 +41,24 @@ public class GameAuxModel {
 
     public void setUser_answers(String user_answers) {
         this.user_answers = user_answers;
+    }
+
+    public int getOptions_id() {
+        return options_id;
+    }
+
+    public void setOptions_id(int options_id) {
+        this.options_id = options_id;
+    }
+
+    @Override
+    public String toString() {
+        return "GameAuxModel{" +
+                "aux_id=" + aux_id +
+                ", user_id=" + user_id +
+                ", options_id=" + options_id +
+                ", name_list='" + name_list + '\'' +
+                ", user_answers='" + user_answers + '\'' +
+                '}';
     }
 }

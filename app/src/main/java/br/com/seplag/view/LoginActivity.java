@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
                                 if(result){
                                     UserSessionHelper session = new UserSessionHelper(LoginActivity.this);
                                     session.createUserLoginSession(user.getUser_name(), user.getUser_phone(),
-                                            user.getUser_neighborhood(), user.getUser_score());
+                                            user.getUser_neighborhood(), user.getUser_score(), user.getUser_id(), user.getUser_office());
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     startActivity(intent);
                                     finish();

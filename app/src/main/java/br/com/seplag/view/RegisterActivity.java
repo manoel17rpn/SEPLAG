@@ -1,9 +1,10 @@
 package br.com.seplag.view;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -13,8 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import org.json.JSONObject;
 
 import br.com.seplag.R;
 import br.com.seplag.adapters.SpinnerAdapter;
@@ -74,6 +73,8 @@ public class RegisterActivity extends AppCompatActivity {
                         user.setUser_name(UserName);
                         user.setUser_phone(UserNumber);
                         user.setUser_neighborhood(UserNeighborhood);
+                        user.setUser_score(100);
+                        user.setUser_office("Secretário");
                         if(!UserStreet.isEmpty()){
                             user.setUser_street(UserStreet);
                         }else{
@@ -88,9 +89,10 @@ public class RegisterActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(String result) {
                                     if(result != null) {
+                                        Log.i("LOG", "" + result);
                                         UserSessionHelper session = new UserSessionHelper(RegisterActivity.this);
                                         session.createUserLoginSession(UserName, UserNumber,
-                                                UserNeighborhood, 0);
+                                                UserNeighborhood, 100, Integer.parseInt(result), "Secretário");
                                         Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                                         startActivity(intent);
                                         finish();
@@ -107,7 +109,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 }
                             });
                         }else{
-                            Toast.makeText(RegisterActivity.this, "Sem conexão com a internet...", Toast.LENGTH_LONG).show();
+                            CreateDialog(RegisterActivity.this, "Sem conexão com internet, por favor conecte-se...");
                         }
                     }
                 }else{
@@ -116,6 +118,23 @@ public class RegisterActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    public void CreateDialog(Context mContext, String text){
+        final AlertDialog alertConnection;
+
+        AlertDialog.Builder builderConnection = new AlertDialog.Builder(mContext);
+        builderConnection.setTitle(getResources().getString(R.string.app_name));
+        builderConnection.setMessage(text);
+        builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertConnection = builderConnection.create();
+        alertConnection.show();
     }
 
 }

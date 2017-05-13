@@ -18,6 +18,7 @@ public class UserModel implements Serializable{
     private String user_income;
     private String user_scholarity;
     private int numbers_residents;
+    private String user_office;
 
     public UserModel() {
     }
@@ -106,6 +107,14 @@ public class UserModel implements Serializable{
 
     public void setNumbers_residents(int numbers_residents) {
         this.numbers_residents = numbers_residents;
+    }
+
+    public String getUser_office() {
+        return user_office;
+    }
+
+    public void setUser_office(String user_office) {
+        this.user_office = user_office;
     }
 
     @Override

@@ -13,7 +13,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <RelativeLayout
@@ -27,7 +27,7 @@
 
 
         <android.support.v7.widget.CardView
-            android:id="@+id/card_quizz"
+            android:id="@+id/card_questions"
             android:layout_width="290dp"
             android:layout_height="220dp"
             android:layout_alignParentTop="true"

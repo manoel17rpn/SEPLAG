@@ -53,6 +53,7 @@
                     android:hint="Telefone Celular (Ex: 81 9 9999-9999)"
                     android:maxLength="11"
                     android:digits="1234567890"
+                    android:imeOptions="actionDone"
                     android:maxLines="1"
                     android:inputType="phone"/>
             </android.support.design.widget.TextInputLayout>

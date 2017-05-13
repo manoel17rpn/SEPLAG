@@ -13,6 +13,15 @@ public class ProgramModel {
     private String name_street;
     private String reference_point;
     private String user_comment;
+    private String image;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public int getUser_id() {
         return user_id;

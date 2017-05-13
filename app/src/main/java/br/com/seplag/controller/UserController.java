@@ -35,8 +35,8 @@ import br.com.seplag.view.MainActivity;
  */
 
 public class UserController {
-    private static final String URL_POST = "http://192.168.112.103/SeplagAppService/public/rest-api/user-methods/create";
-    private static final String URL_GET = "http://192.168.112.103/SeplagAppService/public/rest-api/user-methods/get/";
+    private static final String URL_POST = "http://192.168.112.105:8000/rest-api/user-methods/create";
+    private static final String URL_GET = "http://192.168.112.105:8000/rest-api/user-methods/get/";
     RetryPolicy policy = new DefaultRetryPolicy(45000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
     public void CreateUser(final Context context, final UserModel user, final VolleyCallback callback) {
@@ -71,11 +71,13 @@ public class UserController {
             @Override
             protected Map<String, String> getParams()
             {
-                Map<String, String>  params = new HashMap<String, String>();
+                Map<String, String>  params = new HashMap<>();
                 params.put("user_name", user.getUser_name());
                 params.put("user_phone", user.getUser_phone());
                 params.put("user_neighborhood", user.getUser_neighborhood());
                 params.put("user_street", user.getUser_street());
+                params.put("user_score", Integer.toString(user.getUser_score()));
+                params.put("user_office", user.getUser_office());
 
                 return params;
             }
@@ -109,6 +111,8 @@ public class UserController {
                                 user.setUser_name(jsonObject.getString("user_name"));
                                 user.setUser_phone(jsonObject.getString("user_phone"));
                                 user.setUser_neighborhood(jsonObject.getString("user_neighborhood"));
+                                user.setUser_score(jsonObject.getInt("user_score"));
+                                user.setUser_office(jsonObject.getString("user_office"));
 
                                 callback.onSucess(true);
                             }else if(array.getJSONArray(0).length() == 0){

@@ -1,10 +1,12 @@
 package br.com.seplag.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Manoel Neto on 02/05/2017.
  */
 
-public class GameModel {
+public class GameModel implements Serializable{
     private int game_id;
     private String area_questions;
     private String name_list;
@@ -49,5 +51,16 @@ public class GameModel {
 
     public void setGame_id(int game_id) {
         this.game_id = game_id;
+    }
+
+    @Override
+    public String toString() {
+        return "GameModel{" +
+                "game_id=" + game_id +
+                ", area_questions='" + area_questions + '\'' +
+                ", name_list='" + name_list + '\'' +
+                ", date_post='" + date_post + '\'' +
+                ", active_list=" + active_list +
+                '}';
     }
 }

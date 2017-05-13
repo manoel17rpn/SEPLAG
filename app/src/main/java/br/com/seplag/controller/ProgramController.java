@@ -25,7 +25,7 @@ import br.com.seplag.model.ProgramModel;
 
 public class ProgramController {
 
-    private static final String URL_POST = "http://192.168.112.103/SeplagAppService/public/rest-api/programs-methods/create";
+    private static final String URL_POST = "http://192.168.112.105:8000/rest-api/programs-methods/create";
     RetryPolicy policy = new DefaultRetryPolicy(45000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
     public void CreateProgram(Context mContext, final ProgramModel program, final VolleyCallback callback){
@@ -68,6 +68,7 @@ public class ProgramController {
                 params.put("name_street", program.getName_street());
                 params.put("reference_point", program.getReference_point());
                 params.put("user_comment", program.getUser_comment());
+                params.put("image", program.getImage());
 
 
                 return params;
