@@ -35,15 +35,18 @@ import br.com.seplag.view.MainActivity;
  */
 
 public class UserController {
-    private static final String URL_POST = "http://192.168.112.105:8000/rest-api/user-methods/create";
-    private static final String URL_GET = "http://192.168.112.105:8000/rest-api/user-methods/get/";
+    private static final String URL_REGISTER = "http://192.168.112.105:8000/rest-api/user-methods/create";
+    private static final String URL_LOGIN = "http://192.168.112.105:8000/rest-api/user-methods/get/";
+    private static final String URL_UPDATE_SCORE = "http://192.168.112.105:8000/rest-api/user-methods/updatescore";
+    private static final String URL_GET_SCORE = "http://192.168.112.105:8000/rest-api/user-methods/getscore/";
+    private static final String URL_VERIFY_NUMBER = "http://192.168.112.105:8000/rest-api/user-methods/verifynumber/";
     RetryPolicy policy = new DefaultRetryPolicy(45000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
     public void CreateUser(final Context context, final UserModel user, final VolleyCallback callback) {
         final ProgressDialog dialog = ProgressDialog.show(context, "Carregando", "Estamos realizando seu cadastro, por favor aguarde...", true);
 
         RequestQueue queue = Volley.newRequestQueue(context);
-        StringRequest postRequest = new StringRequest(Request.Method.POST, URL_POST, new Response.Listener<String>() {
+        StringRequest postRequest = new StringRequest(Request.Method.POST, URL_REGISTER, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     dialog.dismiss();
@@ -87,13 +90,13 @@ public class UserController {
         queue.add(postRequest);
     }
 
-    public UserModel LoginUser(final Context context, String UserNumber, final VolleyCallbackGet callback){
-        final ProgressDialog dialog = ProgressDialog.show(context, "Carregando", "Realizando login, por favor aguarde...", true);
+    public UserModel LoginUser(final Context mContext, String UserNumber, final VolleyCallbackGet callback){
+        final ProgressDialog dialog = ProgressDialog.show(mContext, "Carregando", "Realizando login, por favor aguarde...", true);
         final UserModel user = new UserModel();
-        RequestQueue queue = Volley.newRequestQueue(context);
+        RequestQueue queue = Volley.newRequestQueue(mContext);
 
         // prepare the Request
-        JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, URL_GET + UserNumber, null,
+        JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, URL_LOGIN + UserNumber, null,
                 new Response.Listener<JSONArray>()
                 {
                     @Override
@@ -116,7 +119,7 @@ public class UserController {
 
                                 callback.onSucess(true);
                             }else if(array.getJSONArray(0).length() == 0){
-                                Toast.makeText(context, "Número inválido, verifique seu número...", Toast.LENGTH_LONG).show();
+                                Toast.makeText(mContext, "Número inválido, verifique seu número...", Toast.LENGTH_LONG).show();
                             }
 
                             dialog.dismiss();
@@ -143,9 +146,173 @@ public class UserController {
         return user;
     }
 
+    public void UpdateScore(Context mContext, final int user_id, final int add_score, final VolleyCallbackScore callback){
+        final ProgressDialog dialog = ProgressDialog.show(mContext, "Carregando", "Atualizando pontuação...", true);
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        StringRequest putRequest = new StringRequest(Request.Method.PUT, URL_UPDATE_SCORE,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        callback.result(response);
+                        dialog.dismiss();
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        dialog.dismiss();
+                        // error
+                        Log.d("Error.Response", error.toString());
+                    }
+                }
+        ) {
+
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<> ();
+                params.put("user_id", Integer.toString(user_id));
+                params.put("add_score", Integer.toString(add_score));
+
+                return params;
+            }
+
+        };
+        putRequest.setRetryPolicy(policy);
+        queue.add(putRequest);
+    }
+
+    /*public void UpdateOffice(Context mContext, final int user_id, final String new_office){
+        final ProgressDialog dialog = ProgressDialog.show(mContext, "Carregando", "Realizando login, por favor aguarde...", true);
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        StringRequest putRequest = new StringRequest(Request.Method.PUT, URL_UPDATE_OFFICE,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        dialog.dismiss();
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        dialog.dismiss();
+                        // error
+                        Log.d("Error.Response", error.toString());
+                    }
+                }
+        ) {
+
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<> ();
+                params.put("user_id", Integer.toString(user_id));
+                params.put("new_office", new_office);
+
+                return params;
+            }
+
+        };
+        putRequest.setRetryPolicy(policy);
+        queue.add(putRequest);
+    } */
+
+    public void VerifyUserScore(Context mContext, int user_id, final VolleyCallbackScore callback){
+        final ProgressDialog dialog = ProgressDialog.show(mContext, "Atualizando", "Atualizando seu perfil...", true);
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+
+            // prepare the Request
+        JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, URL_GET_SCORE + user_id, null,
+                new Response.Listener<JSONArray>()
+                    {
+                        @Override
+                        public void onResponse(JSONArray array) {
+                            JSONObject jsonObject;
+
+                            try{
+
+                                jsonObject = new JSONObject(array.getJSONObject(0).toString());
+
+                                int score = jsonObject.getInt("user_score");
+
+                                callback.result(Integer.toString(score));
+
+
+                                dialog.dismiss();
+                            }catch (JSONException e){
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                        callback.result("");
+
+                        dialog.dismiss();
+                    }
+                }
+        );
+
+        getRequest.setRetryPolicy(policy);
+        queue.add(getRequest);
+    }
+
+    public void VerifyNumber(Context mContext, String number, final VolleyCallbackVerifyNumber callback){
+        final ProgressDialog dialog = ProgressDialog.show(mContext, "Atualizando", "Atualizando seu perfil...", true);
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+
+        // prepare the Request
+        JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, URL_VERIFY_NUMBER + number, null,
+                new Response.Listener<JSONArray>()
+                {
+                    @Override
+                    public void onResponse(JSONArray array) {
+                        if(array.length() > 0){
+                            callback.onResult(false);
+                        }else{
+                            callback.onResult(true);
+                        }
+
+                        dialog.dismiss();
+                    }
+                },
+
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                        callback.error("Error");
+
+                        dialog.dismiss();
+                    }
+                }
+        );
+
+        getRequest.setRetryPolicy(policy);
+        queue.add(getRequest);
+    }
+
     public interface VolleyCallback{
         void onSuccess(String result);
         void onFailed(int result, String menssager);
+    }
+
+    public interface VolleyCallbackVerifyNumber{
+        void onResult(boolean result);
+        void error(String error);
+    }
+
+    public interface VolleyCallbackScore{
+        void result(String result);
     }
 
     public interface VolleyCallbackGet{

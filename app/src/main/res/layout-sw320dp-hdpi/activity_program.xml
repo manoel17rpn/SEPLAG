@@ -30,7 +30,7 @@
             android:orientation="vertical">
 
             <android.support.v7.widget.AppCompatSpinner
-                android:id="@+id/spinner"
+                android:id="@+id/activities"
                 style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -38,6 +38,14 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="8dp" />
 
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/region"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp" />
 
             <android.support.v7.widget.AppCompatSpinner
                 android:id="@+id/neighborhood"
@@ -46,7 +54,8 @@
                 android:layout_height="50dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="8dp" />
+                android:layout_marginTop="8dp"
+                android:visibility="gone"/>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/input2"

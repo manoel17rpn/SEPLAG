@@ -43,20 +43,21 @@
                         android:id="@+id/edt_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Nome Completo"
+                        android:hint="Nome*"
                         android:inputType="textCapSentences"
                         android:maxLines="1"/>
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp">
 
                     <EditText
                         android:id="@+id/edt_phoneNumber"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Telefone Celular (Ex: 81 9 9999-9999)"
+                        android:hint="Telefone Celular (Ex: 81 9 9999-9999)*"
                         android:maxLength="11"
                         android:digits="1234567890"
                         android:maxLines="1"
@@ -64,22 +65,25 @@
                         android:inputType="phone" />
                 </android.support.design.widget.TextInputLayout>
 
-                <LinearLayout
+                <android.support.v7.widget.AppCompatSpinner
+                    android:id="@+id/region"
+                    style="@style/Widget.AppCompat.Spinner.Underlined"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp" />
 
-                    <android.support.v7.widget.AppCompatSpinner
-                        android:id="@+id/neighborhood"
-                        style="@style/Widget.AppCompat.Spinner.Underlined"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp" />
-
-                </LinearLayout>
+                <android.support.v7.widget.AppCompatSpinner
+                    android:id="@+id/neighborhood"
+                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone"/>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp">
 
                     <EditText
                         android:id="@+id/edt_street"
@@ -87,7 +91,7 @@
                         android:layout_height="wrap_content"
                         android:hint="Nome da Rua"
                         android:inputType="textCapSentences"
-                        android:maxLines="1"/>
+                        android:maxLines="1" />
                 </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>

@@ -14,22 +14,55 @@ public class ArrayHelper {
             "Capinação"
     };
 
-    private String[] arrayNeighborhoods = {
-            "1º Distrito", "2º Distrito", "3º Distrito", "4º Distrito", "Agamenon Magalhães",
-            "Alto do Moura", "Boa Vista", "Caiucá", "Centenário", "Cidade Alta", "Cidade Jardim",
-            "Deputado José Antônio Liberato", "Divinópolis", "Indianópolis", "Jardim Panorama",
-            "João Mota", "José Carlos de Oliveira", "Kennedy", "Luiz Gonzaga", "Maria Auxiliadora",
-            "Maurício de Nassau", "Monte Bom Jesus", "Nossa Senhora das Dores", "Nova Caruaru",
-            "Nina Liberato", "Petrópolis", "Peladas", "Rendeiras", "Riachão", "Salgado", "Santa Rosa",
-            "São Francisco", "São João da Escócia", "São José", "Serras do Vale", "Universitário",
-            "Vassoural", "Verde"
+    private String[] NeighborhoodsUrbanArea = {
+            "Salgado", "Cidade Alta"
+    };
+
+    private String[] DistrictOne = {
+            "DistrictOne"
+    };
+
+    private String[] DistrictTwo = {
+            "DistrictTwo"
+    };
+
+    private String[] DistrictThree = {
+            "DistrictThree"
+    };
+
+    private String[] DistrictFour = {
+            "DistrictFour"
+    };
+
+    public String[] getNeighborhoodsUrbanArea() {
+        return NeighborhoodsUrbanArea;
+    }
+
+    public String[] getDistrictOne() {
+        return DistrictOne;
+    }
+
+    public String[] getDistrictTwo() {
+        return DistrictTwo;
+    }
+
+    public String[] getDistrictThree() {
+        return DistrictThree;
+    }
+
+    public String[] getDistrictFour() {
+        return DistrictFour;
+    }
+
+    private String[] arrayRegions = {
+            "Zona Urbana", "1º Distrito", "2º Distrito", "3º Distrito", "4º Distrito"
     };
 
     public String[] getArrayProgram() {
         return arrayProgram;
     }
 
-    public String[] getArrayNeighborhoods() {
-        return arrayNeighborhoods;
+    public String[] getArrayRegions() {
+        return arrayRegions;
     }
 }

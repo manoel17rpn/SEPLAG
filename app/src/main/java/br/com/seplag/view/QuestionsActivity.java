@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.digits.sdk.android.Digits;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -28,16 +29,17 @@ import java.util.Map;
 import br.com.seplag.R;
 import br.com.seplag.controller.ProgramController;
 import br.com.seplag.controller.QuestionsController;
+import br.com.seplag.controller.UserController;
 import br.com.seplag.helper.InternetHelper;
+import br.com.seplag.helper.OfficeHelper;
 import br.com.seplag.helper.UserSessionHelper;
 import br.com.seplag.model.GameAuxModel;
 import br.com.seplag.model.GameOptionsModel;
 
 public class QuestionsActivity extends AppCompatActivity {
     private QuestionsController controller;
-    private String id;
+    private String user_id;
     private Drawer result;
-    private UserSessionHelper session;
     private String userName;
     private String userScore;
     private String userOffice;
@@ -49,6 +51,7 @@ public class QuestionsActivity extends AppCompatActivity {
     private Button bt_option4;
     private TextView tv_area;
     private InternetHelper internet;
+    private UserSessionHelper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +68,9 @@ public class QuestionsActivity extends AppCompatActivity {
 
         count = 0;
 
-        UserSessionHelper helper = new UserSessionHelper(QuestionsActivity.this);
+        helper = new UserSessionHelper(QuestionsActivity.this);
         Map<String, String> user = helper.getUserDetails();
-        id = user.get("ID");
+        user_id = user.get("ID");
         userName = user.get("Name");
         userScore = user.get("Score");
         userOffice = user.get("Office");
@@ -128,7 +131,8 @@ public class QuestionsActivity extends AppCompatActivity {
                         }
 
                         if(position == 6){
-                            session.logoutUser();
+                            Digits.logout();
+                            helper.logoutUser();
                             result.closeDrawer();
                             Intent intent = new Intent(QuestionsActivity.this, LoginActivity.class);
                             startActivity(intent);
@@ -158,6 +162,16 @@ public class QuestionsActivity extends AppCompatActivity {
                                 new ProgramController.VolleyCallback() {
                                     @Override
                                     public void onSuccess(String result) {
+                                        //OfficeHelper officeHelper = new OfficeHelper();
+                                        UserController controller = new UserController();
+                                        controller.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
+                                                100, new UserController.VolleyCallbackScore() {
+                                                    @Override
+                                                    public void result(String result) {
+                                                        helper.UpdateScore(result);
+                                                    }
+                                                });
+
                                         AlertDialog alertConnection;
 
                                         AlertDialog.Builder builderConnection = new AlertDialog.Builder(QuestionsActivity.this);
@@ -194,6 +208,14 @@ public class QuestionsActivity extends AppCompatActivity {
                                 new ProgramController.VolleyCallback() {
                                     @Override
                                     public void onSuccess(String result) {
+                                        UserController controller = new UserController();
+                                        controller.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
+                                                100, new UserController.VolleyCallbackScore() {
+                                                    @Override
+                                                    public void result(String result) {
+                                                        helper.UpdateScore(result);
+                                                    }
+                                                });
                                         count++;
                                         ChangeButtonText(count);
                                     }
@@ -225,6 +247,15 @@ public class QuestionsActivity extends AppCompatActivity {
                                 new ProgramController.VolleyCallback() {
                                     @Override
                                     public void onSuccess(String result) {
+                                        UserController controller = new UserController();
+                                        controller.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
+                                                100, new UserController.VolleyCallbackScore() {
+                                                    @Override
+                                                    public void result(String result) {
+                                                        helper.UpdateScore(result);
+                                                    }
+                                                });
+
                                         AlertDialog alertConnection;
 
                                         AlertDialog.Builder builderConnection = new AlertDialog.Builder(QuestionsActivity.this);
@@ -261,6 +292,15 @@ public class QuestionsActivity extends AppCompatActivity {
                                 new ProgramController.VolleyCallback() {
                                     @Override
                                     public void onSuccess(String result) {
+                                        UserController controller = new UserController();
+                                        controller.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
+                                                100, new UserController.VolleyCallbackScore() {
+                                                    @Override
+                                                    public void result(String result) {
+                                                        helper.UpdateScore(result);
+                                                    }
+                                                });
+
                                         count++;
                                         ChangeButtonText(count);
                                     }
@@ -292,6 +332,15 @@ public class QuestionsActivity extends AppCompatActivity {
                                 new ProgramController.VolleyCallback() {
                                     @Override
                                     public void onSuccess(String result) {
+                                        UserController controller = new UserController();
+                                        controller.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
+                                                100, new UserController.VolleyCallbackScore() {
+                                                    @Override
+                                                    public void result(String result) {
+                                                        helper.UpdateScore(result);
+                                                    }
+                                                });
+
                                         AlertDialog alertConnection;
 
                                         AlertDialog.Builder builderConnection = new AlertDialog.Builder(QuestionsActivity.this);
@@ -328,6 +377,15 @@ public class QuestionsActivity extends AppCompatActivity {
                                 new ProgramController.VolleyCallback() {
                                     @Override
                                     public void onSuccess(String result) {
+                                        UserController controller = new UserController();
+                                        controller.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
+                                                100, new UserController.VolleyCallbackScore() {
+                                                    @Override
+                                                    public void result(String result) {
+                                                        helper.UpdateScore(result);
+                                                    }
+                                                });
+
                                         count++;
                                         ChangeButtonText(count);
                                     }
@@ -359,6 +417,16 @@ public class QuestionsActivity extends AppCompatActivity {
                                 new ProgramController.VolleyCallback() {
                                     @Override
                                     public void onSuccess(String result) {
+                                        UserController controller = new UserController();
+                                        controller.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
+                                                100, new UserController.VolleyCallbackScore() {
+                                                    @Override
+                                                    public void result(String result) {
+                                                        helper.UpdateScore(result);
+                                                    }
+                                                });
+
+
                                         AlertDialog alertConnection;
 
                                         AlertDialog.Builder builderConnection = new AlertDialog.Builder(QuestionsActivity.this);
@@ -395,6 +463,15 @@ public class QuestionsActivity extends AppCompatActivity {
                                 new ProgramController.VolleyCallback() {
                                     @Override
                                     public void onSuccess(String result) {
+                                        UserController controller = new UserController();
+                                        controller.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
+                                                100, new UserController.VolleyCallbackScore() {
+                                                    @Override
+                                                    public void result(String result) {
+                                                        helper.UpdateScore(result);
+                                                    }
+                                                });
+
                                         count++;
                                         ChangeButtonText(count);
                                     }
@@ -437,7 +514,7 @@ public class QuestionsActivity extends AppCompatActivity {
         GameAuxModel aux = new GameAuxModel();
         aux.setOptions_id(options_id);
         aux.setUser_answers(user_answer);
-        aux.setUser_id(Integer.parseInt(id));
+        aux.setUser_id(Integer.parseInt(user_id));
         aux.setName_list(name_list);
 
         return aux;

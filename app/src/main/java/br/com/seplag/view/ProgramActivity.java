@@ -17,12 +17,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.digits.sdk.android.Digits;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -52,6 +54,7 @@ import static android.R.attr.bitmap;
 public class ProgramActivity extends AppCompatActivity {
     private Spinner activities;
     private Spinner neighborhoods;
+    private Spinner region;
     private EditText street;
     private EditText comment;
     private EditText referencepoint;
@@ -64,28 +67,39 @@ public class ProgramActivity extends AppCompatActivity {
     private String userName;
     private String userScore;
     private String userOffice;
+    private String userId;
     private InternetHelper internet;
     private String image_encode;
     private Bitmap bitmap;
     private int PICK_IMAGE_REQUEST = 1;
     private Uri filePath;
     private TextView tv_image;
+    private String activite = "";
+    private String str_region = "";
+    private String neighborhood = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_program);
 
+        program = new ProgramModel();
         internet  = new InternetHelper();
+
+        session = new UserSessionHelper(this);
+        Map<String, String> mapUser = session.getUserDetails();
+        userName = mapUser.get("Name");
+        userScore = mapUser.get("Score");
+        userOffice = mapUser.get("Office");
+        userId = mapUser.get("ID");
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitle("Nome do Programa");
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
 
-        program = new ProgramModel();
-
-        activities = (Spinner) findViewById(R.id.spinner);
+        activities = (Spinner) findViewById(R.id.activities);
+        region = (Spinner) findViewById(R.id.region);
         neighborhoods = (Spinner) findViewById(R.id.neighborhood);
         referencepoint = (EditText) findViewById(R.id.reference_point);
         comment = (EditText) findViewById(R.id.user_comment);
@@ -94,7 +108,6 @@ public class ProgramActivity extends AppCompatActivity {
         bt_photo = (Button) findViewById(R.id.photo);
         tv_image = (TextView) findViewById(R.id.success_photo);
 
-
         final Intent intent = getIntent();
         Bundle params = intent.getExtras();
 
@@ -102,108 +115,186 @@ public class ProgramActivity extends AppCompatActivity {
             program.setName_program(params.getString("name_program"));
         }
 
-        SpinnerAdapter adapterNeighborhoods = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item);
+        final SpinnerAdapter adapterNeighborhoods = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item);
         SpinnerAdapter adapterPrograms = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item);
+        SpinnerAdapter adapterRegion = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item);
 
         adapterPrograms.addAll(arrayHelper.getArrayProgram());
         adapterPrograms.add("Selecione uma Atividade*");
         activities.setAdapter(adapterPrograms);
         activities.setSelection(adapterPrograms.getCount());
 
-        adapterNeighborhoods.addAll(arrayHelper.getArrayNeighborhoods());
-        adapterNeighborhoods.add("Selecione um Bairro*");
-        neighborhoods.setAdapter(adapterNeighborhoods);
-        neighborhoods.setSelection(adapterNeighborhoods.getCount());
+        adapterRegion.addAll(arrayHelper.getArrayRegions());
+        adapterRegion.add("Selecione uma Região*");
+        region.setAdapter(adapterRegion);
+        region.setSelection(adapterRegion.getCount());
+
+        region.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                str_region = region.getItemAtPosition(position).toString();
+
+                if(position == 0){
+                    //ZONA URBANA
+                    adapterNeighborhoods.clear();
+                    adapterNeighborhoods.addAll(arrayHelper.getNeighborhoodsUrbanArea());
+                    adapterNeighborhoods.add("Selecione um Bairro*");
+                    neighborhoods.setAdapter(adapterNeighborhoods);
+                    neighborhoods.setSelection(adapterNeighborhoods.getCount());
+                    neighborhoods.setVisibility(View.VISIBLE);
+                }
+                if(position == 1){
+                    //PRIMEIRO DISTRITO
+                    adapterNeighborhoods.clear();
+                    adapterNeighborhoods.addAll(arrayHelper.getDistrictOne());
+                    adapterNeighborhoods.add("Selecione um Bairro*");
+                    neighborhoods.setAdapter(adapterNeighborhoods);
+                    neighborhoods.setSelection(adapterNeighborhoods.getCount());
+                    neighborhoods.setVisibility(View.VISIBLE);
+                }
+                if(position == 2){
+                    //SEGUNDO DISTRITO
+                    adapterNeighborhoods.clear();
+                    adapterNeighborhoods.addAll(arrayHelper.getDistrictTwo());
+                    adapterNeighborhoods.add("Selecione um Bairro*");
+                    neighborhoods.setAdapter(adapterNeighborhoods);
+                    neighborhoods.setSelection(adapterNeighborhoods.getCount());
+                    neighborhoods.setVisibility(View.VISIBLE);
+                }
+                if(position == 3){
+                    //TERCEIRO DISTRITO
+                    adapterNeighborhoods.clear();
+                    adapterNeighborhoods.addAll(arrayHelper.getDistrictThree());
+                    adapterNeighborhoods.add("Selecione um Bairro*");
+                    neighborhoods.setAdapter(adapterNeighborhoods);
+                    neighborhoods.setSelection(adapterNeighborhoods.getCount());
+                    neighborhoods.setVisibility(View.VISIBLE);
+                }
+                if(position == 4){
+                    //QUARTO DISTRITO
+                    adapterNeighborhoods.clear();
+                    adapterNeighborhoods.addAll(arrayHelper.getDistrictFour());
+                    adapterNeighborhoods.add("Selecione um Bairro*");
+                    neighborhoods.setAdapter(adapterNeighborhoods);
+                    neighborhoods.setSelection(adapterNeighborhoods.getCount());
+                    neighborhoods.setVisibility(View.VISIBLE);
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
+
+        activities.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                activite = activities.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        neighborhoods.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                neighborhood = neighborhoods.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
         bt_program.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if(internet.TestConnection(ProgramActivity.this)) {
-
-                    String neighborhood = neighborhoods.getSelectedItem().toString();
-                    String activite = activities.getSelectedItem().toString();
                     String reference_point = referencepoint.getText().toString();
                     String street_name = street.getText().toString();
                     String user_comment = comment.getText().toString();
 
                     ProgramController controller = new ProgramController();
 
-                    if (!neighborhood.equals("Selecione um Bairro*")) {
-                        if (!activite.equals("Selecione uma Atividade*")) {
-                            if (!street_name.isEmpty()) {
-                                program.setUser_id(1);
-                                program.setService_program(activite);
-                                program.setName_neighborhood(neighborhood);
-                                program.setName_street(street_name);
-                                if (reference_point.isEmpty()) {
+                    if(!activite.equals("Selecione uma Atividade*")){
+                        if(!str_region.equals("Selecione uma Região*")){
+                            if(!neighborhood.equals("Selecione um Bairro*")){
+
+                                if(!street_name.isEmpty()) {
+                                    program.setUser_id(Integer.parseInt(userId));
+                                    program.setService_program(activite);
+                                    program.setName_neighborhood(neighborhood);
+                                    program.setName_street(street_name);
+                                    if(reference_point.isEmpty()) {
                                     program.setReference_point("");
-                                } else {
-                                    program.setReference_point(reference_point);
-                                }
-
-                                if (user_comment.isEmpty()) {
-                                    program.setUser_comment("");
-                                } else {
-                                    program.setUser_comment(user_comment);
-                                }
-
-                                if(image_encode.isEmpty()){
-                                    program.setImage("");
-                                }else{
-                                    program.setImage(image_encode);
-                                }
-
-                                controller.CreateProgram(ProgramActivity.this, program, new ProgramController.VolleyCallback() {
-                                    @Override
-                                    public void onSuccess(String result) {
-                                        AlertDialog alertConnection;
-
-                                        AlertDialog.Builder builderConnection = new AlertDialog.Builder(ProgramActivity.this);
-                                        builderConnection.setTitle(getResources().getString(R.string.app_name));
-                                        builderConnection.setMessage("Obrigado pela sua contribuição, ele é muito importante para" +
-                                                " Caruaru!");
-                                        builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                Intent intent = new Intent(ProgramActivity.this, MainActivity.class);
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                        });
-                                        alertConnection = builderConnection.create();
-                                        alertConnection.show();
+                                    }else {
+                                        program.setReference_point(reference_point);
+                                    }
+                                    if (user_comment.isEmpty()) {
+                                        program.setUser_comment("");
+                                    } else {
+                                        program.setUser_comment(user_comment);
+                                    }
+                                    if(image_encode == null){
+                                        program.setImage("");
+                                    }else{
+                                        program.setImage(image_encode);
                                     }
 
-                                    @Override
-                                    public void onFailed(int result, String menssager) {
-                                        if (result == 0) {
-                                            CreateDialog(ProgramActivity.this, "Tempo expirado, verifique" +
-                                                    "sua internet e tente novamente...");
+                                    controller.CreateProgram(ProgramActivity.this, program, new ProgramController.VolleyCallback() {
+                                        @Override
+                                        public void onSuccess(String result) {
+                                            AlertDialog alertConnection;
+
+                                            AlertDialog.Builder builderConnection = new AlertDialog.Builder(ProgramActivity.this);
+                                            builderConnection.setTitle(getResources().getString(R.string.app_name));
+                                            builderConnection.setMessage("Obrigado pela sua contribuição, ele é muito importante para" +
+                                                    " Caruaru!");
+                                            builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    Intent intent = new Intent(ProgramActivity.this, MainActivity.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            });
+                                            alertConnection = builderConnection.create();
+                                            alertConnection.show();
                                         }
-                                    }
-                                });
-                            } else {
-                                Toast.makeText(ProgramActivity.this, "Por favor, insira o nome da rua...", Toast.LENGTH_LONG).show();
+                                        @Override
+                                        public void onFailed(int result, String menssager) {
+                                            if (result == 0) {
+                                                CreateDialog(ProgramActivity.this, "Tempo expirado, verifique" +
+                                                        "sua internet e tente novamente...");
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    Toast.makeText(ProgramActivity.this, "Por favor, insira o nome da rua...", Toast.LENGTH_LONG).show();
+                                }
+                            }else{
+                                Toast.makeText(ProgramActivity.this, "Por favor, selecione um bairro...", Toast.LENGTH_LONG).show();
                             }
-                        } else {
-                            Toast.makeText(ProgramActivity.this, "Por favor, selecione a atividade que você deseja...",
-                                    Toast.LENGTH_LONG).show();
+                        }else{
+                            Toast.makeText(ProgramActivity.this, "Por favor, selecione uma região...", Toast.LENGTH_LONG).show();
                         }
-                    } else {
-                        Toast.makeText(ProgramActivity.this, "Por favor selecione o bairro...", Toast.LENGTH_LONG).show();
+                    }else{
+                        Toast.makeText(ProgramActivity.this, "Por favor, selecione a atividade que você deseja...", Toast.LENGTH_LONG).show();
                     }
                 } else{
                     CreateDialog(ProgramActivity.this, "Sem conexão com internet, por favor conecte-se...");
                 }
             }
         });
-
-        session = new UserSessionHelper(this);
-        Map<String, String> mapUser = session.getUserDetails();
-        userName = mapUser.get("Name");
-        userScore = mapUser.get("Score");
-        userOffice = mapUser.get("Office");
 
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -247,6 +338,7 @@ public class ProgramActivity extends AppCompatActivity {
                         }
 
                         if(position == 6){
+                            Digits.logout();
                             session.logoutUser();
                             result.closeDrawer();
                             Intent intent = new Intent(ProgramActivity.this, LoginActivity.class);

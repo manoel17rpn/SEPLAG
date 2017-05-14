@@ -9,9 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.digits.sdk.android.Digits;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -26,19 +28,21 @@ import java.util.Map;
 
 import br.com.seplag.R;
 import br.com.seplag.controller.QuestionsController;
+import br.com.seplag.controller.UserController;
 import br.com.seplag.helper.InternetHelper;
 import br.com.seplag.helper.UserSessionHelper;
 import br.com.seplag.model.GameOptionsModel;
 
 public class MainActivity extends AppCompatActivity {
-    Drawer result;
-    UserSessionHelper session;
-    String userName;
-    String userScore;
-    String userOffice;
-    CardView cardQuestions;
-    CardView cardPrograms;
-    String user_id;
+    private Drawer result;
+    private UserSessionHelper session;
+    private String userName;
+    private String userScore;
+    private String userOffice;
+    private CardView cardQuestions;
+    private CardView cardPrograms;
+    private String user_id;
+    private UserController userController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,18 @@ public class MainActivity extends AppCompatActivity {
         userScore = mapUser.get("Score");
         userOffice = mapUser.get("Office");
         user_id = mapUser.get("ID");
+
+        Log.i("TAG", user_id);
+
+        userController = new UserController();
+        if(new InternetHelper().TestConnection(MainActivity.this)){
+            userController.VerifyUserScore(MainActivity.this, Integer.parseInt(user_id), new UserController.VolleyCallbackScore() {
+                @Override
+                public void result(String result) {
+                    session.UpdateScore(result);
+                }
+            });
+        }
 
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -102,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         if(position == 6){
+                            Digits.logout();
                             session.logoutUser();
                             result.closeDrawer();
                             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -155,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
 
     public void CreateDialog(Context mContext, String text){
         final AlertDialog alertConnection;

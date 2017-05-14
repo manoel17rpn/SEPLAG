@@ -38,7 +38,7 @@ public class UserSessionHelper {
     // Email address (make variable public to access from outside)
     public static final String KEY_PHONE = "Phone";
 
-    public static final String KEY_SCORE = "Score";
+    private static final String KEY_SCORE = "Score";
 
     public static final String KEY_NEIGHBORHOOD = "Neighborhood";
 
@@ -51,8 +51,13 @@ public class UserSessionHelper {
         editor = pref.edit();
     }
 
+    public void UpdateScore(String new_score){
+        editor.putString(KEY_SCORE, new_score);
+        editor.commit();
+    }
+
     //Create login session
-    public void createUserLoginSession(String name, String phone, String neighborhood, int score, int id, String office){
+    public void createUserLoginSession(String name, String phone, String neighborhood, String score, int id, String office){
         // Storing login value as TRUE
         editor.putBoolean(IS_USER_LOGIN, true);
 
@@ -64,7 +69,7 @@ public class UserSessionHelper {
 
         editor.putString(KEY_NEIGHBORHOOD, neighborhood);
 
-        editor.putInt(KEY_SCORE, score);
+        editor.putString(KEY_SCORE, score);
 
         editor.putInt(KEY_ID, id);
 
@@ -92,7 +97,7 @@ public class UserSessionHelper {
 
         user.put(KEY_OFFICE, pref.getString(KEY_OFFICE, null));
 
-        user.put(KEY_SCORE, Integer.toString(pref.getInt(KEY_SCORE, 0)));
+        user.put(KEY_SCORE, pref.getString(KEY_SCORE, null));
 
         user.put(KEY_ID, Integer.toString(pref.getInt(KEY_ID, 0)));
 
