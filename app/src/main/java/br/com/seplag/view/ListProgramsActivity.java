@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
+import com.digits.sdk.android.Digits;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -81,26 +82,24 @@ public class ListProgramsActivity extends AppCompatActivity {
 
                         if(position == 3){
                             result.closeDrawer();
-                            Toast.makeText(ListProgramsActivity.this, "Como Funciona", Toast.LENGTH_SHORT).show();
-                            //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                            //startActivity(intent);
+                            Intent intent = new Intent(ListProgramsActivity.this, HowWorks.class);
+                            startActivity(intent);
                         }
 
                         if(position == 4){
                             result.closeDrawer();
-                            Toast.makeText(ListProgramsActivity.this, "Prêmios", Toast.LENGTH_SHORT).show();
-                            //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                            //startActivity(intent);
+                            Intent intent = new Intent(ListProgramsActivity.this, AwardsActivity.class);
+                            startActivity(intent);
                         }
 
                         if(position == 5){
                             result.closeDrawer();
-                            Toast.makeText(ListProgramsActivity.this, "Sobre", Toast.LENGTH_SHORT).show();
-                            //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                            //startActivity(intent);
+                            Intent intent = new Intent(ListProgramsActivity.this, AboutApp.class);
+                            startActivity(intent);
                         }
 
                         if(position == 6){
+                            Digits.logout();
                             session.logoutUser();
                             result.closeDrawer();
                             Intent intent = new Intent(ListProgramsActivity.this, LoginActivity.class);

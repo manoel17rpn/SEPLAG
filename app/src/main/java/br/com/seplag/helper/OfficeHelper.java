@@ -59,23 +59,25 @@ public class OfficeHelper {
 
     public String getOffice(int score){
         String office = "";
-        if(score == 1000){
+        if(score < 1000){
+            office = getOffice_1();
+        }else if(score >= 1000 && score < 2000){
             office = getOffice_2();
-        }else if(score == 2000){
+        }else if(score >= 2000 && score < 3000){
             office = getOffice_3();
-        }else if(score == 3000){
+        }else if(score >= 3000 && score < 4000){
             office = getOffice_4();
-        }else if(score == 4000){
+        }else if(score >= 4000 && score < 5000){
             office = getOffice_5();
-        }else if(score == 5000){
+        }else if(score >= 5000 && score < 6000){
             office = getOffice_6();
-        }else if(score == 6000){
+        }else if(score >= 6000 && score < 7000){
             office = getOffice_7();
-        }else if(score == 7000){
+        }else if(score >= 7000 && score < 8000){
             office = getOffice_8();
-        }else if(score == 8000){
+        }else if(score >= 8000 && score < 10000){
             office = getOffice_9();
-        }else if(score == 10000){
+        }else if(score >= 10000){
             office = getOffice_10();
         }
 

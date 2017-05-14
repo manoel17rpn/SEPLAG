@@ -30,6 +30,7 @@ import br.com.seplag.R;
 import br.com.seplag.controller.QuestionsController;
 import br.com.seplag.controller.UserController;
 import br.com.seplag.helper.InternetHelper;
+import br.com.seplag.helper.OfficeHelper;
 import br.com.seplag.helper.UserSessionHelper;
 import br.com.seplag.model.GameOptionsModel;
 
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private CardView cardPrograms;
     private String user_id;
     private UserController userController;
+    private String new_office;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +66,25 @@ public class MainActivity extends AppCompatActivity {
         userOffice = mapUser.get("Office");
         user_id = mapUser.get("ID");
 
-        Log.i("TAG", user_id);
-
         userController = new UserController();
         if(new InternetHelper().TestConnection(MainActivity.this)){
             userController.VerifyUserScore(MainActivity.this, Integer.parseInt(user_id), new UserController.VolleyCallbackScore() {
                 @Override
-                public void result(String result) {
+                public void result(final String result) {
+                    OfficeHelper officeHelper = new OfficeHelper();
+                    new_office = officeHelper.getOffice(Integer.parseInt(result));
                     session.UpdateScore(result);
+                    if(!new_office.equals(userOffice)){
+                        userController.UpdateOffice(MainActivity.this, Integer.parseInt(user_id), new_office,
+                                new UserController.VolleyCallbackOffice() {
+                            @Override
+                            public void onResult(boolean resultOffice) {
+                                if(resultOffice){
+                                    session.UpdateOffice(new_office);
+                                }
+                            }
+                        });
+                    }
                 }
             });
         }
@@ -98,23 +111,20 @@ public class MainActivity extends AppCompatActivity {
 
                         if(position == 3){
                             result.closeDrawer();
-                            Toast.makeText(MainActivity.this, "Como Funciona", Toast.LENGTH_SHORT).show();
-                            //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                            //startActivity(intent);
+                            Intent intent = new Intent(MainActivity.this, HowWorks.class);
+                            startActivity(intent);
                         }
 
                         if(position == 4){
                             result.closeDrawer();
-                            Toast.makeText(MainActivity.this, "Prêmios", Toast.LENGTH_SHORT).show();
-                            //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                            //startActivity(intent);
+                            Intent intent = new Intent(MainActivity.this, AwardsActivity.class);
+                            startActivity(intent);
                         }
 
                         if(position == 5){
                             result.closeDrawer();
-                            Toast.makeText(MainActivity.this, "Sobre", Toast.LENGTH_SHORT).show();
-                            //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                            //startActivity(intent);
+                           Intent intent = new Intent(MainActivity.this, AboutApp.class);
+                            startActivity(intent);
                         }
 
                         if(position == 6){

@@ -58,6 +58,7 @@ public class ProgramActivity extends AppCompatActivity {
     private EditText street;
     private EditText comment;
     private EditText referencepoint;
+    private EditText poste;
     private Button bt_program;
     private Button bt_photo;
     private ArrayHelper arrayHelper = new ArrayHelper();
@@ -77,11 +78,19 @@ public class ProgramActivity extends AppCompatActivity {
     private String activite = "";
     private String str_region = "";
     private String neighborhood = "";
+    private String str_program =  "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_program);
+
+        final Intent intent = getIntent();
+        Bundle params = intent.getExtras();
+
+        if(params != null){
+            str_program = params.getString("name_program");
+        }
 
         program = new ProgramModel();
         internet  = new InternetHelper();
@@ -94,7 +103,7 @@ public class ProgramActivity extends AppCompatActivity {
         userId = mapUser.get("ID");
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        myToolbar.setTitle("Nome do Programa");
+        myToolbar.setTitle(str_program);
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
 
@@ -102,24 +111,18 @@ public class ProgramActivity extends AppCompatActivity {
         region = (Spinner) findViewById(R.id.region);
         neighborhoods = (Spinner) findViewById(R.id.neighborhood);
         referencepoint = (EditText) findViewById(R.id.reference_point);
+        poste = (EditText) findViewById(R.id.poste);
         comment = (EditText) findViewById(R.id.user_comment);
         street = (EditText) findViewById(R.id.street);
         bt_program = (Button) findViewById(R.id.bt_program);
         bt_photo = (Button) findViewById(R.id.photo);
         tv_image = (TextView) findViewById(R.id.success_photo);
 
-        final Intent intent = getIntent();
-        Bundle params = intent.getExtras();
-
-        if(params != null){
-            program.setName_program(params.getString("name_program"));
-        }
-
         final SpinnerAdapter adapterNeighborhoods = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item);
         SpinnerAdapter adapterPrograms = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item);
         SpinnerAdapter adapterRegion = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item);
 
-        adapterPrograms.addAll(arrayHelper.getArrayProgram());
+        adapterPrograms.addAll(GetArrayActivitiesProgram(str_program));
         adapterPrograms.add("Selecione uma Atividade*");
         activities.setAdapter(adapterPrograms);
         activities.setSelection(adapterPrograms.getCount());
@@ -193,6 +196,12 @@ public class ProgramActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 activite = activities.getItemAtPosition(position).toString();
+                if(activite.equals("Troca de Lâmpadas")){
+                    poste.setHint("Barramento/Número do Poste*");
+                    poste.setVisibility(View.VISIBLE);
+                }else{
+                    poste.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -228,14 +237,16 @@ public class ProgramActivity extends AppCompatActivity {
                     if(!activite.equals("Selecione uma Atividade*")){
                         if(!str_region.equals("Selecione uma Região*")){
                             if(!neighborhood.equals("Selecione um Bairro*")){
-
                                 if(!street_name.isEmpty()) {
+                                    String program_name = str_program.replaceAll(" ", "_").toUpperCase();
                                     program.setUser_id(Integer.parseInt(userId));
                                     program.setService_program(activite);
                                     program.setName_neighborhood(neighborhood);
+                                    program.setName_program(program_name);
                                     program.setName_street(street_name);
+                                    program.setPoste(poste.getText().toString());
                                     if(reference_point.isEmpty()) {
-                                    program.setReference_point("");
+                                        program.setReference_point("");
                                     }else {
                                         program.setReference_point(reference_point);
                                     }
@@ -249,44 +260,40 @@ public class ProgramActivity extends AppCompatActivity {
                                     }else{
                                         program.setImage(image_encode);
                                     }
-
                                     controller.CreateProgram(ProgramActivity.this, program, new ProgramController.VolleyCallback() {
                                         @Override
                                         public void onSuccess(String result) {
                                             AlertDialog alertConnection;
-
                                             AlertDialog.Builder builderConnection = new AlertDialog.Builder(ProgramActivity.this);
                                             builderConnection.setTitle(getResources().getString(R.string.app_name));
-                                            builderConnection.setMessage("Obrigado pela sua contribuição, ele é muito importante para" +
-                                                    " Caruaru!");
+                                            builderConnection.setMessage("Obrigado pela sua contribuição, ele é muito importante para" + " Caruaru!");
                                             builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    Intent intent = new Intent(ProgramActivity.this, MainActivity.class);
+                                                public void onClick(DialogInterface dialog, int which) {Intent intent = new Intent(ProgramActivity.this, MainActivity.class);
                                                     startActivity(intent);
                                                     finish();
                                                 }
                                             });
                                             alertConnection = builderConnection.create();
                                             alertConnection.show();
-                                        }
-                                        @Override
-                                        public void onFailed(int result, String menssager) {
-                                            if (result == 0) {
-                                                CreateDialog(ProgramActivity.this, "Tempo expirado, verifique" +
-                                                        "sua internet e tente novamente...");
                                             }
-                                        }
-                                    });
-                                } else {
-                                    Toast.makeText(ProgramActivity.this, "Por favor, insira o nome da rua...", Toast.LENGTH_LONG).show();
+                                            @Override
+                                            public void onFailed(int result, String menssager) {
+                                                if (result == 0) {
+                                                    CreateDialog(ProgramActivity.this, "Tempo expirado, verifique" +
+                                                            "sua internet e tente novamente...");
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        Toast.makeText(ProgramActivity.this, "Por favor, insira o nome da rua...", Toast.LENGTH_LONG).show();
+                                    }
+                                }else{
+                                    Toast.makeText(ProgramActivity.this, "Por favor, selecione um bairro...", Toast.LENGTH_LONG).show();
                                 }
                             }else{
-                                Toast.makeText(ProgramActivity.this, "Por favor, selecione um bairro...", Toast.LENGTH_LONG).show();
+                                Toast.makeText(ProgramActivity.this, "Por favor, selecione uma região...", Toast.LENGTH_LONG).show();
                             }
-                        }else{
-                            Toast.makeText(ProgramActivity.this, "Por favor, selecione uma região...", Toast.LENGTH_LONG).show();
-                        }
                     }else{
                         Toast.makeText(ProgramActivity.this, "Por favor, selecione a atividade que você deseja...", Toast.LENGTH_LONG).show();
                     }
@@ -318,23 +325,20 @@ public class ProgramActivity extends AppCompatActivity {
 
                         if(position == 3){
                             result.closeDrawer();
-                            Toast.makeText(ProgramActivity.this, "Como Funciona", Toast.LENGTH_SHORT).show();
-                            //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                            //startActivity(intent);
+                            Intent intent = new Intent(ProgramActivity.this, HowWorks.class);
+                            startActivity(intent);
                         }
 
                         if(position == 4){
                             result.closeDrawer();
-                            Toast.makeText(ProgramActivity.this, "Prêmios", Toast.LENGTH_SHORT).show();
-                            //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                            //startActivity(intent);
+                            Intent intent = new Intent(ProgramActivity.this, AwardsActivity.class);
+                            startActivity(intent);
                         }
 
                         if(position == 5){
                             result.closeDrawer();
-                            Toast.makeText(ProgramActivity.this, "Sobre", Toast.LENGTH_SHORT).show();
-                            //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                            //startActivity(intent);
+                            Intent intent = new Intent(ProgramActivity.this, AboutApp.class);
+                            startActivity(intent);
                         }
 
                         if(position == 6){
@@ -412,6 +416,20 @@ public class ProgramActivity extends AppCompatActivity {
         });
         alertConnection = builderConnection.create();
         alertConnection.show();
+    }
+
+    public String[] GetArrayActivitiesProgram(String program){
+        String[] activities = null;
+
+        if(program.equals("Cidade Limpa")){
+            activities = arrayHelper.getArrayActivitiesCidadeLimpa();
+        }else if(program.equals("Ilumina Caruaru")){
+            activities = arrayHelper.getArrayActivitiesIlumina();
+        }else{
+            activities = arrayHelper.getArrayActivitiesCidadeLimpa();
+        }
+
+        return  activities;
     }
 
 }

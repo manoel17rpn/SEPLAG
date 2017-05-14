@@ -43,7 +43,7 @@ public class QuestionsActivity extends AppCompatActivity {
     private String userName;
     private String userScore;
     private String userOffice;
-    int count;
+    private int count;
     private ArrayList<GameOptionsModel> list;
     private Button bt_option1;
     private Button bt_option2;
@@ -51,7 +51,8 @@ public class QuestionsActivity extends AppCompatActivity {
     private Button bt_option4;
     private TextView tv_area;
     private InternetHelper internet;
-    private UserSessionHelper helper;
+    private UserSessionHelper session;
+    private String new_office;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,7 @@ public class QuestionsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_questions);
 
         internet = new InternetHelper();
+        count = 0;
 
         bt_option1 = (Button) findViewById(R.id.answer1);
         bt_option2 = (Button) findViewById(R.id.answer2);
@@ -66,10 +68,8 @@ public class QuestionsActivity extends AppCompatActivity {
         bt_option4 = (Button) findViewById(R.id.answer4);
         tv_area = (TextView) findViewById(R.id.tv_areaquestions);
 
-        count = 0;
-
-        helper = new UserSessionHelper(QuestionsActivity.this);
-        Map<String, String> user = helper.getUserDetails();
+        session = new UserSessionHelper(QuestionsActivity.this);
+        Map<String, String> user = session.getUserDetails();
         user_id = user.get("ID");
         userName = user.get("Name");
         userScore = user.get("Score");
@@ -111,28 +111,25 @@ public class QuestionsActivity extends AppCompatActivity {
 
                         if(position == 3){
                             result.closeDrawer();
-                            Toast.makeText(QuestionsActivity.this, "Como Funciona", Toast.LENGTH_SHORT).show();
-                            //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                            //startActivity(intent);
+                            Intent intent = new Intent(QuestionsActivity.this, HowWorks.class);
+                            startActivity(intent);
                         }
 
                         if(position == 4){
                             result.closeDrawer();
-                            Toast.makeText(QuestionsActivity.this, "Prêmios", Toast.LENGTH_SHORT).show();
-                            //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                            //startActivity(intent);
+                            Intent intent = new Intent(QuestionsActivity.this, AwardsActivity.class);
+                            startActivity(intent);
                         }
 
                         if(position == 5){
                             result.closeDrawer();
-                            Toast.makeText(QuestionsActivity.this, "Sobre", Toast.LENGTH_SHORT).show();
-                            //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                            //startActivity(intent);
+                            Intent intent = new Intent(QuestionsActivity.this, AboutApp.class);
+                            startActivity(intent);
                         }
 
                         if(position == 6){
                             Digits.logout();
-                            helper.logoutUser();
+                            session.logoutUser();
                             result.closeDrawer();
                             Intent intent = new Intent(QuestionsActivity.this, LoginActivity.class);
                             startActivity(intent);
@@ -152,84 +149,14 @@ public class QuestionsActivity extends AppCompatActivity {
         bt_option1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(internet.TestConnection(QuestionsActivity.this)){
-                    if(AuxCount(count, list.size())){
-                        //Fazer requisição e ao final encerrar, sem count++
-                        int options_id = list.get(count).getOptions_id();
-                        String name_list = list.get(count).getName_list();
-                        controller = new QuestionsController();
-                        controller.CreateAnswer(QuestionsActivity.this, AuxObject(options_id, "option_one", name_list),
-                                new ProgramController.VolleyCallback() {
-                                    @Override
-                                    public void onSuccess(String result) {
-                                        //OfficeHelper officeHelper = new OfficeHelper();
-                                        UserController controller = new UserController();
-                                        controller.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
-                                                100, new UserController.VolleyCallbackScore() {
-                                                    @Override
-                                                    public void result(String result) {
-                                                        helper.UpdateScore(result);
-                                                    }
-                                                });
-
-                                        AlertDialog alertConnection;
-
-                                        AlertDialog.Builder builderConnection = new AlertDialog.Builder(QuestionsActivity.this);
-                                        builderConnection.setTitle(getResources().getString(R.string.app_name));
-                                        builderConnection.setMessage("Obrigado pela sua contribuição, ele é muito importante para" +
-                                                " Caruaru! Em breve teremos mais opções!");
-                                        builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                Intent intent = new Intent(QuestionsActivity.this, MainActivity.class);
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                        });
-                                        alertConnection = builderConnection.create();
-                                        alertConnection.show();
-                                    }
-
-                                    @Override
-                                    public void onFailed(int result, String menssager) {
-                                        if(result == 0){
-                                            Toast.makeText(QuestionsActivity.this, "Tempo expirado, verifique" +
-                                                            "sua internet e tente novamente...",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                    }else{
-                        int options_id = list.get(count).getOptions_id();
-                        String name_list = list.get(count).getName_list();
-                        controller = new QuestionsController();
-                        controller = new QuestionsController();
-                        controller.CreateAnswer(QuestionsActivity.this, AuxObject(options_id, "option_one", name_list),
-                                new ProgramController.VolleyCallback() {
-                                    @Override
-                                    public void onSuccess(String result) {
-                                        UserController controller = new UserController();
-                                        controller.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
-                                                100, new UserController.VolleyCallbackScore() {
-                                                    @Override
-                                                    public void result(String result) {
-                                                        helper.UpdateScore(result);
-                                                    }
-                                                });
-                                        count++;
-                                        ChangeButtonText(count);
-                                    }
-
-                                    @Override
-                                    public void onFailed(int result, String menssager) {
-                                        if(result == 0){
-                                            Toast.makeText(QuestionsActivity.this, "Tempo expirado, verifique" +
-                                                            "sua internet e tente novamente...",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
+                if (internet.TestConnection(QuestionsActivity.this)) {
+                    if (AuxCount(count, list.size())) {
+                        SendAnswerNoMoreQuestions("option_one");
+                    } else {
+                        SendAnswerAndMoreQuestions("option_one");
                     }
+                }else{
+                    CreateDialog(QuestionsActivity.this, "Sem conexão com internet, por favor conecte-se...");
                 }
             }
         });
@@ -239,82 +166,12 @@ public class QuestionsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (internet.TestConnection(QuestionsActivity.this)) {
                     if (AuxCount(count, list.size())) {
-                        //Fazer requisição e ao final encerrar, sem count++
-                        int options_id = list.get(count).getOptions_id();
-                        String name_list = list.get(count).getName_list();
-                        controller = new QuestionsController();
-                        controller.CreateAnswer(QuestionsActivity.this, AuxObject(options_id, "option_two", name_list),
-                                new ProgramController.VolleyCallback() {
-                                    @Override
-                                    public void onSuccess(String result) {
-                                        UserController controller = new UserController();
-                                        controller.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
-                                                100, new UserController.VolleyCallbackScore() {
-                                                    @Override
-                                                    public void result(String result) {
-                                                        helper.UpdateScore(result);
-                                                    }
-                                                });
-
-                                        AlertDialog alertConnection;
-
-                                        AlertDialog.Builder builderConnection = new AlertDialog.Builder(QuestionsActivity.this);
-                                        builderConnection.setTitle(getResources().getString(R.string.app_name));
-                                        builderConnection.setMessage("Obrigado pela sua contribuição, ele é muito importante para" +
-                                                " Caruaru! Em breve teremos mais opções!");
-                                        builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                Intent intent = new Intent(QuestionsActivity.this, MainActivity.class);
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                        });
-                                        alertConnection = builderConnection.create();
-                                        alertConnection.show();
-                                    }
-
-                                    @Override
-                                    public void onFailed(int result, String menssager) {
-                                        if (result == 0) {
-                                            Toast.makeText(QuestionsActivity.this, "Tempo expirado, verifique" +
-                                                            "sua internet e tente novamente...",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
+                        SendAnswerNoMoreQuestions("option_two");
                     } else {
-                        int options_id = list.get(count).getOptions_id();
-                        String name_list = list.get(count).getName_list();
-                        controller = new QuestionsController();
-                        controller = new QuestionsController();
-                        controller.CreateAnswer(QuestionsActivity.this, AuxObject(options_id, "option_two", name_list),
-                                new ProgramController.VolleyCallback() {
-                                    @Override
-                                    public void onSuccess(String result) {
-                                        UserController controller = new UserController();
-                                        controller.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
-                                                100, new UserController.VolleyCallbackScore() {
-                                                    @Override
-                                                    public void result(String result) {
-                                                        helper.UpdateScore(result);
-                                                    }
-                                                });
-
-                                        count++;
-                                        ChangeButtonText(count);
-                                    }
-
-                                    @Override
-                                    public void onFailed(int result, String menssager) {
-                                        if (result == 0) {
-                                            Toast.makeText(QuestionsActivity.this, "Tempo expirado, verifique" +
-                                                            "sua internet e tente novamente...",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
+                        SendAnswerAndMoreQuestions("option_two");
                     }
+                }else{
+                    CreateDialog(QuestionsActivity.this, "Sem conexão com internet, por favor conecte-se...");
                 }
             }
         });
@@ -324,82 +181,12 @@ public class QuestionsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (internet.TestConnection(QuestionsActivity.this)) {
                     if (AuxCount(count, list.size())) {
-                        //Fazer requisição e ao final encerrar, sem count++
-                        int options_id = list.get(count).getOptions_id();
-                        String name_list = list.get(count).getName_list();
-                        controller = new QuestionsController();
-                        controller.CreateAnswer(QuestionsActivity.this, AuxObject(options_id, "option_three", name_list),
-                                new ProgramController.VolleyCallback() {
-                                    @Override
-                                    public void onSuccess(String result) {
-                                        UserController controller = new UserController();
-                                        controller.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
-                                                100, new UserController.VolleyCallbackScore() {
-                                                    @Override
-                                                    public void result(String result) {
-                                                        helper.UpdateScore(result);
-                                                    }
-                                                });
-
-                                        AlertDialog alertConnection;
-
-                                        AlertDialog.Builder builderConnection = new AlertDialog.Builder(QuestionsActivity.this);
-                                        builderConnection.setTitle(getResources().getString(R.string.app_name));
-                                        builderConnection.setMessage("Obrigado pela sua contribuição, ele é muito importante para" +
-                                                " Caruaru! Em breve teremos mais opções!");
-                                        builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                Intent intent = new Intent(QuestionsActivity.this, MainActivity.class);
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                        });
-                                        alertConnection = builderConnection.create();
-                                        alertConnection.show();
-                                    }
-
-                                    @Override
-                                    public void onFailed(int result, String menssager) {
-                                        if (result == 0) {
-                                            Toast.makeText(QuestionsActivity.this, "Tempo expirado, verifique" +
-                                                            "sua internet e tente novamente...",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
+                        SendAnswerNoMoreQuestions("option_three");
                     } else {
-                        int options_id = list.get(count).getOptions_id();
-                        String name_list = list.get(count).getName_list();
-                        controller = new QuestionsController();
-                        controller = new QuestionsController();
-                        controller.CreateAnswer(QuestionsActivity.this, AuxObject(options_id, "option_three", name_list),
-                                new ProgramController.VolleyCallback() {
-                                    @Override
-                                    public void onSuccess(String result) {
-                                        UserController controller = new UserController();
-                                        controller.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
-                                                100, new UserController.VolleyCallbackScore() {
-                                                    @Override
-                                                    public void result(String result) {
-                                                        helper.UpdateScore(result);
-                                                    }
-                                                });
-
-                                        count++;
-                                        ChangeButtonText(count);
-                                    }
-
-                                    @Override
-                                    public void onFailed(int result, String menssager) {
-                                        if (result == 0) {
-                                            Toast.makeText(QuestionsActivity.this, "Tempo expirado, verifique" +
-                                                            "sua internet e tente novamente...",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
+                        SendAnswerAndMoreQuestions("option_three");
                     }
+                }else{
+                    CreateDialog(QuestionsActivity.this, "Sem conexão com internet, por favor conecte-se...");
                 }
             }
         });
@@ -409,82 +196,9 @@ public class QuestionsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (internet.TestConnection(QuestionsActivity.this)) {
                     if (AuxCount(count, list.size())) {
-                        //Fazer requisição e ao final encerrar, sem count++
-                        int options_id = list.get(count).getOptions_id();
-                        String name_list = list.get(count).getName_list();
-                        controller = new QuestionsController();
-                        controller.CreateAnswer(QuestionsActivity.this, AuxObject(options_id, "option_four", name_list),
-                                new ProgramController.VolleyCallback() {
-                                    @Override
-                                    public void onSuccess(String result) {
-                                        UserController controller = new UserController();
-                                        controller.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
-                                                100, new UserController.VolleyCallbackScore() {
-                                                    @Override
-                                                    public void result(String result) {
-                                                        helper.UpdateScore(result);
-                                                    }
-                                                });
-
-
-                                        AlertDialog alertConnection;
-
-                                        AlertDialog.Builder builderConnection = new AlertDialog.Builder(QuestionsActivity.this);
-                                        builderConnection.setTitle(getResources().getString(R.string.app_name));
-                                        builderConnection.setMessage("Obrigado pela sua contribuição, ele é muito importante para" +
-                                                " Caruaru! Em breve teremos mais opções!");
-                                        builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                Intent intent = new Intent(QuestionsActivity.this, MainActivity.class);
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                        });
-                                        alertConnection = builderConnection.create();
-                                        alertConnection.show();
-                                    }
-
-                                    @Override
-                                    public void onFailed(int result, String menssager) {
-                                        if (result == 0) {
-                                            Toast.makeText(QuestionsActivity.this, "Tempo expirado, verifique" +
-                                                            "sua internet e tente novamente...",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
+                        SendAnswerNoMoreQuestions("option_four");
                     } else {
-                        int options_id = list.get(count).getOptions_id();
-                        String name_list = list.get(count).getName_list();
-                        controller = new QuestionsController();
-                        controller = new QuestionsController();
-                        controller.CreateAnswer(QuestionsActivity.this, AuxObject(options_id, "option_four", name_list),
-                                new ProgramController.VolleyCallback() {
-                                    @Override
-                                    public void onSuccess(String result) {
-                                        UserController controller = new UserController();
-                                        controller.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
-                                                100, new UserController.VolleyCallbackScore() {
-                                                    @Override
-                                                    public void result(String result) {
-                                                        helper.UpdateScore(result);
-                                                    }
-                                                });
-
-                                        count++;
-                                        ChangeButtonText(count);
-                                    }
-
-                                    @Override
-                                    public void onFailed(int result, String menssager) {
-                                        if (result == 0) {
-                                            Toast.makeText(QuestionsActivity.this, "Tempo expirado, verifique" +
-                                                            "sua internet e tente novamente...",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
+                        SendAnswerAndMoreQuestions("option_four");
                     }
                 }else{
                     CreateDialog(QuestionsActivity.this, "Sem conexão com internet, por favor conecte-se...");
@@ -534,6 +248,113 @@ public class QuestionsActivity extends AppCompatActivity {
         });
         alertConnection = builderConnection.create();
         alertConnection.show();
+    }
+
+    public void SendAnswerAndMoreQuestions(String option){
+        int options_id = list.get(count).getOptions_id();
+        String name_list = list.get(count).getName_list();
+        controller = new QuestionsController();
+        controller = new QuestionsController();
+        controller.CreateAnswer(QuestionsActivity.this, AuxObject(options_id, option, name_list),
+                new ProgramController.VolleyCallback() {
+                    @Override
+                    public void onSuccess(String result) {
+                        final UserController userController = new UserController();
+                        userController.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
+                                100, new UserController.VolleyCallbackScore() {
+                                    @Override
+                                    public void result(String result) {
+                                        OfficeHelper officeHelper = new OfficeHelper();
+                                        new_office = officeHelper.getOffice(Integer.parseInt(result));
+                                        session.UpdateScore(result);
+                                        if(!new_office.equals(userOffice)){
+                                            userController.UpdateOffice(QuestionsActivity.this, Integer.parseInt(user_id), new_office,
+                                                    new UserController.VolleyCallbackOffice() {
+                                                        @Override
+                                                        public void onResult(boolean resultOffice) {
+                                                            if(resultOffice){
+                                                                session.UpdateOffice(new_office);
+                                                            }
+                                                        }
+                                            });
+                                        }
+                                    }
+                                });
+
+                        count++;
+                        ChangeButtonText(count);
+                    }
+
+                    @Override
+                    public void onFailed(int result, String menssager) {
+                        if (result == 0) {
+                            Toast.makeText(QuestionsActivity.this, "Tempo expirado, verifique" +
+                                            "sua internet e tente novamente...",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    public void SendAnswerNoMoreQuestions(String option){
+        //Fazer requisição e ao final encerrar, sem count++
+        int options_id = list.get(count).getOptions_id();
+        String name_list = list.get(count).getName_list();
+        controller = new QuestionsController();
+        controller.CreateAnswer(QuestionsActivity.this, AuxObject(options_id, option, name_list),
+                new ProgramController.VolleyCallback() {
+                    @Override
+                    public void onSuccess(String result) {
+                        final UserController userController = new UserController();
+                        userController.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
+                                100, new UserController.VolleyCallbackScore() {
+                                    @Override
+                                    public void result(String result) {
+                                        OfficeHelper officeHelper = new OfficeHelper();
+                                        new_office = officeHelper.getOffice(Integer.parseInt(result));
+                                        session.UpdateScore(result);
+                                        if(!new_office.equals(userOffice)){
+                                            userController.UpdateOffice(QuestionsActivity.this, Integer.parseInt(user_id), new_office,
+                                                    new UserController.VolleyCallbackOffice() {
+                                                        @Override
+                                                        public void onResult(boolean resultOffice) {
+                                                            if(resultOffice){
+                                                                session.UpdateOffice(new_office);
+                                                            }
+                                                        }
+                                            });
+                                        }
+                                    }
+                                });
+
+
+                        AlertDialog alertConnection;
+
+                        AlertDialog.Builder builderConnection = new AlertDialog.Builder(QuestionsActivity.this);
+                        builderConnection.setTitle(getResources().getString(R.string.app_name));
+                        builderConnection.setMessage("Obrigado pela sua contribuição, ele é muito importante para" +
+                                " Caruaru! Em breve teremos mais opções!");
+                        builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(QuestionsActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
+                        alertConnection = builderConnection.create();
+                        alertConnection.show();
+                    }
+
+                    @Override
+                    public void onFailed(int result, String menssager) {
+                        if (result == 0) {
+                            Toast.makeText(QuestionsActivity.this, "Tempo expirado, verifique" +
+                                            "sua internet e tente novamente...",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
 }

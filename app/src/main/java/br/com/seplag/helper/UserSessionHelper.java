@@ -56,6 +56,11 @@ public class UserSessionHelper {
         editor.commit();
     }
 
+    public void UpdateOffice(String new_office){
+        editor.putString(KEY_OFFICE, new_office);
+        editor.commit();
+    }
+
     //Create login session
     public void createUserLoginSession(String name, String phone, String neighborhood, String score, int id, String office){
         // Storing login value as TRUE

@@ -14,6 +14,15 @@ public class ProgramModel {
     private String reference_point;
     private String user_comment;
     private String image;
+    private String poste;
+
+    public String getPoste() {
+        return poste;
+    }
+
+    public void setPoste(String poste) {
+        this.poste = poste;
+    }
 
     public String getImage() {
         return image;

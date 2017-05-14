@@ -33,7 +33,8 @@ public class ProgramFragment extends Fragment{
     private RecyclerView mRecyclerView;
     private List<Program> mList = new ArrayList<>();
     String[] Titulo = new String[]{"Cidade Limpa", "Praça Nova", "Ilumina Caruaru"};
-    String[] Info = new String[]{"O Cidade Limpa é um programa para limpar a cidade.", "O Ilumina Caruaru é um programa que vai iluminar a cidade.", "O Praça Nova é um programa que construir novas praças."};
+    String[] Info = new String[]{"Atividades de limpeza do município.",
+            "Manutenção da iluminação pública.", "O Praça Nova é um programa que construir novas praças."};
     int[] photos = new int[]{R.drawable.cidadelimpa, R.drawable.cidadelimpa, R.drawable.cidadelimpa};
 
     @Override

@@ -75,6 +75,23 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/input5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/poste"
+                    android:inputType="textCapSentences"
+                    android:visibility="gone"
+                    android:maxLines="1" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
                 android:id="@+id/input3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -110,43 +127,41 @@
                     android:hint="Há algo que você queira acrescentar?" />
             </android.support.design.widget.TextInputLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/success_photo"
+                android:visibility="gone"
+                android:textColor="@color/colorPrimary"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="12dp"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="12dp"
+                android:id="@+id/photo"
+                android:text="Selecionar Imagem"
+                android:background="@drawable/custom_selector_blue"
+                android:textColor="#fff"/>
+
+            <Button
+                android:id="@+id/bt_program"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/custom_selector_green"
+                android:text="Contribuir"
+                android:textColor="#fff" />
+
         </LinearLayout>
     </ScrollView>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/success_photo"
-        android:visibility="gone"
-        android:textColor="@color/colorPrimary"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_below="@+id/scroll"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
-        android:id="@+id/photo"
-        android:text="Selecionar Imagem"
-        android:layout_below="@+id/success_photo"
-        android:background="@drawable/custom_selector_blue"
-        android:textColor="#fff"/>
-
-    <Button
-        android:id="@+id/bt_program"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/photo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/custom_selector_green"
-        android:text="Contribuir"
-        android:textColor="#fff" />
 
 </RelativeLayout>

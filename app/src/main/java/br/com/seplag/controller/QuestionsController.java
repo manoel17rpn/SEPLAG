@@ -42,8 +42,8 @@ import okhttp3.OkHttpClient;
  */
 
 public class QuestionsController {
-    private static final String URL_GET_OPTIONS = "http://192.168.112.105:8000/rest-api/game-methods/options/get/";
-    private static final String URL_POST_ANSWER = "http://192.168.112.105:8000/rest-api/game-methods/aux/create";
+    private static final String URL_GET_OPTIONS = "http://192.168.112.102:8000/rest-api/game-methods/options/get/";
+    private static final String URL_POST_ANSWER = "http://192.168.112.102:8000/rest-api/game-methods/aux/create";
     private RetryPolicy policy = new DefaultRetryPolicy(45000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
     private ArrayList<GameOptionsModel> listOptions;
 

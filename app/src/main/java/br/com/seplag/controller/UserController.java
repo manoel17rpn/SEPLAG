@@ -35,11 +35,12 @@ import br.com.seplag.view.MainActivity;
  */
 
 public class UserController {
-    private static final String URL_REGISTER = "http://192.168.112.105:8000/rest-api/user-methods/create";
-    private static final String URL_LOGIN = "http://192.168.112.105:8000/rest-api/user-methods/get/";
-    private static final String URL_UPDATE_SCORE = "http://192.168.112.105:8000/rest-api/user-methods/updatescore";
-    private static final String URL_GET_SCORE = "http://192.168.112.105:8000/rest-api/user-methods/getscore/";
-    private static final String URL_VERIFY_NUMBER = "http://192.168.112.105:8000/rest-api/user-methods/verifynumber/";
+    private static final String URL_REGISTER = "http://192.168.112.102:8000/rest-api/user-methods/create";
+    private static final String URL_LOGIN = "http://192.168.112.102:8000/rest-api/user-methods/get/";
+    private static final String URL_UPDATE_SCORE = "http://192.168.112.102:8000/rest-api/user-methods/updatescore";
+    private static final String URL_GET_SCORE = "http://192.168.112.102:8000/rest-api/user-methods/getscore/";
+    private static final String URL_VERIFY_NUMBER = "http://192.168.112.102:8000/rest-api/user-methods/verifynumber/";
+    private static final String URL_UPDATE_OFFICE = "http://192.168.112.102:8000/rest-api/user-methods/updateoffice";
     RetryPolicy policy = new DefaultRetryPolicy(45000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
     public void CreateUser(final Context context, final UserModel user, final VolleyCallback callback) {
@@ -184,7 +185,7 @@ public class UserController {
         queue.add(putRequest);
     }
 
-    /*public void UpdateOffice(Context mContext, final int user_id, final String new_office){
+    public void UpdateOffice(Context mContext, final int user_id, final String new_office, final VolleyCallbackOffice callbackOffice){
         final ProgressDialog dialog = ProgressDialog.show(mContext, "Carregando", "Realizando login, por favor aguarde...", true);
         RequestQueue queue = Volley.newRequestQueue(mContext);
         StringRequest putRequest = new StringRequest(Request.Method.PUT, URL_UPDATE_OFFICE,
@@ -192,6 +193,7 @@ public class UserController {
                 {
                     @Override
                     public void onResponse(String response) {
+                        callbackOffice.onResult(true);
                         dialog.dismiss();
                     }
                 },
@@ -199,6 +201,7 @@ public class UserController {
                 {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        callbackOffice.onResult(false);
                         dialog.dismiss();
                         // error
                         Log.d("Error.Response", error.toString());
@@ -219,38 +222,36 @@ public class UserController {
         };
         putRequest.setRetryPolicy(policy);
         queue.add(putRequest);
-    } */
+    }
 
-    public void VerifyUserScore(Context mContext, int user_id, final VolleyCallbackScore callback){
+    public void VerifyUserScore(Context mContext, int user_id, final VolleyCallbackScore callback) {
         final ProgressDialog dialog = ProgressDialog.show(mContext, "Atualizando", "Atualizando seu perfil...", true);
         RequestQueue queue = Volley.newRequestQueue(mContext);
 
-            // prepare the Request
+        // prepare the Request
         JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, URL_GET_SCORE + user_id, null,
-                new Response.Listener<JSONArray>()
-                    {
-                        @Override
-                        public void onResponse(JSONArray array) {
-                            JSONObject jsonObject;
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray array) {
+                        JSONObject jsonObject;
 
-                            try{
+                        try {
 
-                                jsonObject = new JSONObject(array.getJSONObject(0).toString());
+                            jsonObject = new JSONObject(array.getJSONObject(0).toString());
 
-                                int score = jsonObject.getInt("user_score");
+                            int score = jsonObject.getInt("user_score");
 
-                                callback.result(Integer.toString(score));
+                            callback.result(Integer.toString(score));
 
 
-                                dialog.dismiss();
-                            }catch (JSONException e){
-                                e.printStackTrace();
-                            }
+                            dialog.dismiss();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    },
+                    }
+                },
 
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
@@ -313,6 +314,10 @@ public class UserController {
 
     public interface VolleyCallbackScore{
         void result(String result);
+    }
+
+    public interface VolleyCallbackOffice{
+        void onResult(boolean resultOffice);
     }
 
     public interface VolleyCallbackGet{
