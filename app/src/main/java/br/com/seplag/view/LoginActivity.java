@@ -106,6 +106,12 @@ public class LoginActivity extends AppCompatActivity {
                     user_session.createUserLoginSession(user.getUser_name(), user.getUser_phone(),
                             user.getUser_neighborhood(), Integer.toString(user.getUser_score()), user.getUser_id(),
                             user.getUser_office());
+                    if(!user.getUser_sex().equals(null)){
+                        user_session.UpdateRegisterUser(user.getUser_sex(), user.getUser_scholarity(), user.getNumbers_residents(),
+                                user.getUser_income());
+                    }else{
+                        user_session.UpdateRegisterUser("null", "null", "null", "null");
+                    }
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
@@ -123,5 +129,11 @@ public class LoginActivity extends AppCompatActivity {
 
         };
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

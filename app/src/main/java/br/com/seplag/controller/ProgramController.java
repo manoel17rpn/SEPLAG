@@ -25,11 +25,11 @@ import br.com.seplag.model.ProgramModel;
 
 public class ProgramController {
 
-    private static final String URL_POST = "http://192.168.112.102:8000/rest-api/programs-methods/create";
+    private static final String URL_POST = "http://usepio.com/WebServiceSeplag/public/rest-api/programs-methods/create";
     RetryPolicy policy = new DefaultRetryPolicy(45000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
     public void CreateProgram(Context mContext, final ProgramModel program, final VolleyCallback callback){
-        final ProgressDialog dialog = ProgressDialog.show(mContext, "Carregando", "Estamos realizando seu cadastro, por favor aguarde...", true);
+        final ProgressDialog dialog = ProgressDialog.show(mContext, "Carregando", "Estamos processando sua contribuição, por favor aguarde...", true);
 
         RequestQueue queue = Volley.newRequestQueue(mContext);
         StringRequest postRequest = new StringRequest(Request.Method.POST, URL_POST, new Response.Listener<String>() {

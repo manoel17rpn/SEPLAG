@@ -35,12 +35,13 @@ import br.com.seplag.view.MainActivity;
  */
 
 public class UserController {
-    private static final String URL_REGISTER = "http://192.168.112.102:8000/rest-api/user-methods/create";
-    private static final String URL_LOGIN = "http://192.168.112.102:8000/rest-api/user-methods/get/";
-    private static final String URL_UPDATE_SCORE = "http://192.168.112.102:8000/rest-api/user-methods/updatescore";
-    private static final String URL_GET_SCORE = "http://192.168.112.102:8000/rest-api/user-methods/getscore/";
-    private static final String URL_VERIFY_NUMBER = "http://192.168.112.102:8000/rest-api/user-methods/verifynumber/";
-    private static final String URL_UPDATE_OFFICE = "http://192.168.112.102:8000/rest-api/user-methods/updateoffice";
+    private static final String URL_REGISTER = "http://usepio.com/WebServiceSeplag/public/rest-api/user-methods/create";
+    private static final String URL_LOGIN = "http://usepio.com/WebServiceSeplag/public/rest-api/user-methods/get/";
+    private static final String URL_UPDATE_SCORE = "http://usepio.com/WebServiceSeplag/public/rest-api/user-methods/updatescore";
+    private static final String URL_GET_SCORE = "http://usepio.com/WebServiceSeplag/public/rest-api/user-methods/getscore/";
+    private static final String URL_VERIFY_NUMBER = "http://usepio.com/WebServiceSeplag/public/rest-api/user-methods/verifynumber/";
+    private static final String URL_UPDATE_OFFICE = "http://usepio.com/WebServiceSeplag/public/rest-api/user-methods/updateoffice";
+    private static final String URL_UPDATE_USER = "http://usepio.com/WebServiceSeplag/public/rest-api/user-methods/updateuser";
     RetryPolicy policy = new DefaultRetryPolicy(45000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
     public void CreateUser(final Context context, final UserModel user, final VolleyCallback callback) {
@@ -82,6 +83,7 @@ public class UserController {
                 params.put("user_street", user.getUser_street());
                 params.put("user_score", Integer.toString(user.getUser_score()));
                 params.put("user_office", user.getUser_office());
+                params.put("user_phone_invite", user.getUser_invite());
 
                 return params;
             }
@@ -117,6 +119,10 @@ public class UserController {
                                 user.setUser_neighborhood(jsonObject.getString("user_neighborhood"));
                                 user.setUser_score(jsonObject.getInt("user_score"));
                                 user.setUser_office(jsonObject.getString("user_office"));
+                                user.setUser_income(jsonObject.getString("user_income"));
+                                user.setUser_sex(jsonObject.getString("user_sex"));
+                                user.setUser_scholarity(jsonObject.getString("user_scholarity"));
+                                user.setNumbers_residents(jsonObject.getString("numbers_residents"));
 
                                 callback.onSucess(true);
                             }else if(array.getJSONArray(0).length() == 0){
@@ -175,7 +181,6 @@ public class UserController {
             {
                 Map<String, String>  params = new HashMap<> ();
                 params.put("user_id", Integer.toString(user_id));
-                params.put("add_score", Integer.toString(add_score));
 
                 return params;
             }
@@ -186,7 +191,7 @@ public class UserController {
     }
 
     public void UpdateOffice(Context mContext, final int user_id, final String new_office, final VolleyCallbackOffice callbackOffice){
-        final ProgressDialog dialog = ProgressDialog.show(mContext, "Carregando", "Realizando login, por favor aguarde...", true);
+        final ProgressDialog dialog = ProgressDialog.show(mContext, "Carregando", "Atualizando seu perfil, por favor aguarde...", true);
         RequestQueue queue = Volley.newRequestQueue(mContext);
         StringRequest putRequest = new StringRequest(Request.Method.PUT, URL_UPDATE_OFFICE,
                 new Response.Listener<String>()
@@ -224,8 +229,51 @@ public class UserController {
         queue.add(putRequest);
     }
 
+    public void UpdateUser(Context mContext, final int user_id, final String sex, final String scholarity,
+                           final String residents, final String income, final VolleyCallbackUpdateUser callback){
+        final ProgressDialog dialog = ProgressDialog.show(mContext, "Carregando", "Atualizando seu perfil, por favor aguarde...", true);
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        StringRequest putRequest = new StringRequest(Request.Method.PUT, URL_UPDATE_USER,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        callback.onResult(true);
+                        dialog.dismiss();
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onResult(false);
+                        dialog.dismiss();
+                        // error
+                        Log.d("Error.Response", error.toString());
+                    }
+                }
+        ) {
+
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<> ();
+                params.put("user_id", Integer.toString(user_id));
+                params.put("user_sex", sex);
+                params.put("user_scholarity", scholarity);
+                params.put("user_residents", residents);
+                params.put("user_income", income);
+
+                return params;
+            }
+
+        };
+        putRequest.setRetryPolicy(policy);
+        queue.add(putRequest);
+    }
+
     public void VerifyUserScore(Context mContext, int user_id, final VolleyCallbackScore callback) {
-        final ProgressDialog dialog = ProgressDialog.show(mContext, "Atualizando", "Atualizando seu perfil...", true);
+        final ProgressDialog dialog = ProgressDialog.show(mContext, "Carregando", "Atualizando seu perfil...", true);
         RequestQueue queue = Volley.newRequestQueue(mContext);
 
         // prepare the Request
@@ -267,7 +315,7 @@ public class UserController {
     }
 
     public void VerifyNumber(Context mContext, String number, final VolleyCallbackVerifyNumber callback){
-        final ProgressDialog dialog = ProgressDialog.show(mContext, "Atualizando", "Atualizando seu perfil...", true);
+        final ProgressDialog dialog = ProgressDialog.show(mContext, "Carregando", "Vefirificando número...", true);
         RequestQueue queue = Volley.newRequestQueue(mContext);
 
         // prepare the Request
@@ -317,6 +365,10 @@ public class UserController {
     }
 
     public interface VolleyCallbackOffice{
+        void onResult(boolean resultOffice);
+    }
+
+    public interface VolleyCallbackUpdateUser{
         void onResult(boolean resultOffice);
     }
 

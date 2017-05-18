@@ -97,7 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="2dp">
 
                 <EditText
                     android:layout_width="match_parent"
@@ -127,22 +127,21 @@
                     android:hint="Há algo que você queira acrescentar?" />
             </android.support.design.widget.TextInputLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:id="@+id/success_photo"
                 android:visibility="gone"
-                android:textColor="@color/colorPrimary"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp"/>
+                android:layout_marginTop="8dp"/>
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:id="@+id/photo"
                 android:text="Selecionar Imagem"
                 android:background="@drawable/custom_selector_blue"

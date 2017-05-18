@@ -17,8 +17,17 @@ public class UserModel implements Serializable{
     private String user_sex;
     private String user_income;
     private String user_scholarity;
-    private int numbers_residents;
+    private String numbers_residents;
     private String user_office;
+    private String user_invite;
+
+    public String getUser_invite() {
+        return user_invite;
+    }
+
+    public void setUser_invite(String user_invite) {
+        this.user_invite = user_invite;
+    }
 
     public UserModel() {
     }
@@ -101,11 +110,11 @@ public class UserModel implements Serializable{
         this.user_scholarity = user_scholarity;
     }
 
-    public int getNumbers_residents() {
+    public String getNumbers_residents() {
         return numbers_residents;
     }
 
-    public void setNumbers_residents(int numbers_residents) {
+    public void setNumbers_residents(String numbers_residents) {
         this.numbers_residents = numbers_residents;
     }
 

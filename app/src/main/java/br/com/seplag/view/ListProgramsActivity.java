@@ -2,12 +2,12 @@ package br.com.seplag.view;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Toast;
 
 import com.digits.sdk.android.Digits;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -19,14 +19,11 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import br.com.seplag.R;
 import br.com.seplag.fragments.ProgramFragment;
 import br.com.seplag.helper.UserSessionHelper;
-import br.com.seplag.model.Program;
 
 public class ListProgramsActivity extends AppCompatActivity {
     Drawer result;
@@ -94,12 +91,21 @@ public class ListProgramsActivity extends AppCompatActivity {
 
                         if(position == 5){
                             result.closeDrawer();
-                            Intent intent = new Intent(ListProgramsActivity.this, AboutApp.class);
+                            Intent intent = new Intent(ListProgramsActivity.this, CompleteRegister.class);
                             startActivity(intent);
                         }
 
                         if(position == 6){
-                            Digits.logout();
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Digits.logout();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }, 3000);
                             session.logoutUser();
                             result.closeDrawer();
                             Intent intent = new Intent(ListProgramsActivity.this, LoginActivity.class);
@@ -114,7 +120,7 @@ public class ListProgramsActivity extends AppCompatActivity {
         result.addItem(new DividerDrawerItem());
         result.addItem(new PrimaryDrawerItem().withName("Como Funciona?"));
         result.addItem(new PrimaryDrawerItem().withName("Prêmios"));
-        result.addItem(new PrimaryDrawerItem().withName("Sobre"));
+        result.addItem(new PrimaryDrawerItem().withName("Completar Cadastro"));
         result.addItem(new PrimaryDrawerItem().withName("Sair"));
 
     }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -39,7 +40,6 @@ import br.com.seplag.model.GameOptionsModel;
 public class QuestionsActivity extends AppCompatActivity {
     private QuestionsController controller;
     private String user_id;
-    private Drawer result;
     private String userName;
     private String userScore;
     private String userOffice;
@@ -52,7 +52,7 @@ public class QuestionsActivity extends AppCompatActivity {
     private TextView tv_area;
     private InternetHelper internet;
     private UserSessionHelper session;
-    private String new_office;
+    private String userSex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +74,7 @@ public class QuestionsActivity extends AppCompatActivity {
         userName = user.get("Name");
         userScore = user.get("Score");
         userOffice = user.get("Office");
+        userSex = user.get("Sex");
 
         final Intent intent = getIntent();
         Bundle params = intent.getExtras();
@@ -87,64 +88,6 @@ public class QuestionsActivity extends AppCompatActivity {
         myToolbar.setTitle("O que precisamos?");
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
-
-
-        AccountHeader headerResult = new AccountHeaderBuilder()
-                .withActivity(this)
-                .withHeaderBackground(R.color.colorPrimary)
-                .withOnlySmallProfileImagesVisible(false)
-                .addProfiles(
-                        new ProfileDrawerItem().withName(userName).withEmail(userOffice)
-                                .withIcon(getResources().getDrawable(R.drawable.business))
-                ).build();
-
-        result = new DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(myToolbar)
-                .withSavedInstance(savedInstanceState)
-                .withSelectedItem(0)
-                .withAccountHeader(headerResult)
-                .withActionBarDrawerToggle(true)
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-
-                        if(position == 3){
-                            result.closeDrawer();
-                            Intent intent = new Intent(QuestionsActivity.this, HowWorks.class);
-                            startActivity(intent);
-                        }
-
-                        if(position == 4){
-                            result.closeDrawer();
-                            Intent intent = new Intent(QuestionsActivity.this, AwardsActivity.class);
-                            startActivity(intent);
-                        }
-
-                        if(position == 5){
-                            result.closeDrawer();
-                            Intent intent = new Intent(QuestionsActivity.this, AboutApp.class);
-                            startActivity(intent);
-                        }
-
-                        if(position == 6){
-                            Digits.logout();
-                            session.logoutUser();
-                            result.closeDrawer();
-                            Intent intent = new Intent(QuestionsActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                        }
-
-                        return true;
-                    }
-                }).build();
-
-        result.addItem(new PrimaryDrawerItem().withName("Pontos").withBadge(userScore));
-        result.addItem(new DividerDrawerItem());
-        result.addItem(new PrimaryDrawerItem().withName("Como Funciona?"));
-        result.addItem(new PrimaryDrawerItem().withName("Prêmios"));
-        result.addItem(new PrimaryDrawerItem().withName("Sobre"));
-        result.addItem(new PrimaryDrawerItem().withName("Sair"));
 
         bt_option1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -259,28 +202,6 @@ public class QuestionsActivity extends AppCompatActivity {
                 new ProgramController.VolleyCallback() {
                     @Override
                     public void onSuccess(String result) {
-                        final UserController userController = new UserController();
-                        userController.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
-                                100, new UserController.VolleyCallbackScore() {
-                                    @Override
-                                    public void result(String result) {
-                                        OfficeHelper officeHelper = new OfficeHelper();
-                                        new_office = officeHelper.getOffice(Integer.parseInt(result));
-                                        session.UpdateScore(result);
-                                        if(!new_office.equals(userOffice)){
-                                            userController.UpdateOffice(QuestionsActivity.this, Integer.parseInt(user_id), new_office,
-                                                    new UserController.VolleyCallbackOffice() {
-                                                        @Override
-                                                        public void onResult(boolean resultOffice) {
-                                                            if(resultOffice){
-                                                                session.UpdateOffice(new_office);
-                                                            }
-                                                        }
-                                            });
-                                        }
-                                    }
-                                });
-
                         count++;
                         ChangeButtonText(count);
                     }
@@ -305,34 +226,11 @@ public class QuestionsActivity extends AppCompatActivity {
                 new ProgramController.VolleyCallback() {
                     @Override
                     public void onSuccess(String result) {
-                        final UserController userController = new UserController();
-                        userController.UpdateScore(QuestionsActivity.this, Integer.parseInt(user_id),
-                                100, new UserController.VolleyCallbackScore() {
-                                    @Override
-                                    public void result(String result) {
-                                        OfficeHelper officeHelper = new OfficeHelper();
-                                        new_office = officeHelper.getOffice(Integer.parseInt(result));
-                                        session.UpdateScore(result);
-                                        if(!new_office.equals(userOffice)){
-                                            userController.UpdateOffice(QuestionsActivity.this, Integer.parseInt(user_id), new_office,
-                                                    new UserController.VolleyCallbackOffice() {
-                                                        @Override
-                                                        public void onResult(boolean resultOffice) {
-                                                            if(resultOffice){
-                                                                session.UpdateOffice(new_office);
-                                                            }
-                                                        }
-                                            });
-                                        }
-                                    }
-                                });
-
-
                         AlertDialog alertConnection;
 
                         AlertDialog.Builder builderConnection = new AlertDialog.Builder(QuestionsActivity.this);
                         builderConnection.setTitle(getResources().getString(R.string.app_name));
-                        builderConnection.setMessage("Obrigado pela sua contribuição, ele é muito importante para" +
+                        builderConnection.setMessage("Obrigado pela sua contribuição, ela é muito importante para" +
                                 " Caruaru! Em breve teremos mais opções!");
                         builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override

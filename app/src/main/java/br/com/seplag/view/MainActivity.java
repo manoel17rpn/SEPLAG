@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,7 +14,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.digits.sdk.android.Digits;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private String user_id;
     private UserController userController;
     private String new_office;
+    private String userSex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         userScore = mapUser.get("Score");
         userOffice = mapUser.get("Office");
         user_id = mapUser.get("ID");
+        userSex = mapUser.get("Sex");
 
         userController = new UserController();
         if(new InternetHelper().TestConnection(MainActivity.this)){
@@ -121,18 +125,47 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
 
-                        if(position == 5){
-                            result.closeDrawer();
-                           Intent intent = new Intent(MainActivity.this, AboutApp.class);
-                            startActivity(intent);
-                        }
+                        if(userSex.equals("null")){
+                            if(position == 5){
+                                result.closeDrawer();
+                                Intent intent = new Intent(MainActivity.this, CompleteRegister.class);
+                                startActivity(intent);
+                                finish();
+                            }
 
-                        if(position == 6){
-                            Digits.logout();
-                            session.logoutUser();
-                            result.closeDrawer();
-                            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                            startActivity(intent);
+                            if(position == 6){
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            Digits.logout();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }, 3000);
+                                session.logoutUser();
+                                result.closeDrawer();
+                                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                            }
+                        }else{
+                            if(position == 5){
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            Digits.logout();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }, 3000);
+                                session.logoutUser();
+                                result.closeDrawer();
+                                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                            }
                         }
 
                         return true;
@@ -143,7 +176,9 @@ public class MainActivity extends AppCompatActivity {
         result.addItem(new DividerDrawerItem());
         result.addItem(new PrimaryDrawerItem().withName("Como Funciona?"));
         result.addItem(new PrimaryDrawerItem().withName("Prêmios"));
-        result.addItem(new PrimaryDrawerItem().withName("Sobre"));
+        if(userSex.equals("null")){
+            result.addItem(new PrimaryDrawerItem().withName("Completar Cadastro"));
+        }
         result.addItem(new PrimaryDrawerItem().withName("Sair"));
 
 

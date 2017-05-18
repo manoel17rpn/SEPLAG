@@ -1,27 +1,24 @@
 package br.com.seplag.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.digits.sdk.android.Digits;
@@ -34,10 +31,8 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
-import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
@@ -48,8 +43,6 @@ import br.com.seplag.helper.ArrayHelper;
 import br.com.seplag.helper.InternetHelper;
 import br.com.seplag.helper.UserSessionHelper;
 import br.com.seplag.model.ProgramModel;
-
-import static android.R.attr.bitmap;
 
 public class ProgramActivity extends AppCompatActivity {
     private Spinner activities;
@@ -74,7 +67,7 @@ public class ProgramActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private int PICK_IMAGE_REQUEST = 1;
     private Uri filePath;
-    private TextView tv_image;
+    private ImageView tv_image;
     private String activite = "";
     private String str_region = "";
     private String neighborhood = "";
@@ -116,7 +109,7 @@ public class ProgramActivity extends AppCompatActivity {
         street = (EditText) findViewById(R.id.street);
         bt_program = (Button) findViewById(R.id.bt_program);
         bt_photo = (Button) findViewById(R.id.photo);
-        tv_image = (TextView) findViewById(R.id.success_photo);
+        tv_image = (ImageView) findViewById(R.id.success_photo);
 
         final SpinnerAdapter adapterNeighborhoods = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item);
         SpinnerAdapter adapterPrograms = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item);
@@ -337,12 +330,21 @@ public class ProgramActivity extends AppCompatActivity {
 
                         if(position == 5){
                             result.closeDrawer();
-                            Intent intent = new Intent(ProgramActivity.this, AboutApp.class);
+                            Intent intent = new Intent(ProgramActivity.this, CompleteRegister.class);
                             startActivity(intent);
                         }
 
                         if(position == 6){
-                            Digits.logout();
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Digits.logout();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }, 3000);
                             session.logoutUser();
                             result.closeDrawer();
                             Intent intent = new Intent(ProgramActivity.this, LoginActivity.class);
@@ -357,7 +359,7 @@ public class ProgramActivity extends AppCompatActivity {
         result.addItem(new DividerDrawerItem());
         result.addItem(new PrimaryDrawerItem().withName("Como Funciona?"));
         result.addItem(new PrimaryDrawerItem().withName("Prêmios"));
-        result.addItem(new PrimaryDrawerItem().withName("Sobre"));
+        result.addItem(new PrimaryDrawerItem().withName("Completar Cadastro"));
         result.addItem(new PrimaryDrawerItem().withName("Sair"));
 
         bt_photo.setOnClickListener(new View.OnClickListener() {
@@ -387,16 +389,17 @@ public class ProgramActivity extends AppCompatActivity {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 image_encode = getStringImage(bitmap);
                 tv_image.setVisibility(View.VISIBLE);
-                tv_image.setText("Imagem carregada com Sucesso!");
+                tv_image.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public String getStringImage(Bitmap bmp){
+    public String getStringImage(Bitmap bitmap){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        Bitmap resized = Bitmap.createScaledBitmap(bitmap, 500, 400, true);
+        resized.compress(Bitmap.CompressFormat.PNG, 90, baos);
         byte[] imageBytes = baos.toByteArray();
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         return encodedImage;

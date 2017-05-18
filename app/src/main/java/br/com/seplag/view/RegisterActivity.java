@@ -37,6 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText userName;
     private EditText userNumber;
     private EditText userStreet;
+    private EditText userInvite;
     private Button bt_register;
     private ArrayHelper arrayHelper = new ArrayHelper();
     private AuthCallback authCallback;
@@ -45,7 +46,9 @@ public class RegisterActivity extends AppCompatActivity {
     private String UserNumber;
     private String UserStreet;
     private String UserNeighborhood;
+    private String invite;
     private String str_region;
+    private boolean b_invite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
         userName = (EditText) findViewById(R.id.edt_name);
         userNumber = (EditText) findViewById(R.id.edt_phoneNumber);
         userStreet = (EditText) findViewById(R.id.edt_street);
+        userInvite = (EditText) findViewById(R.id.edt_invite);
         bt_register = (Button) findViewById(R.id.bt_finalregister);
 
         final SpinnerAdapter adapterNeighborhoods = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item);
@@ -146,10 +150,13 @@ public class RegisterActivity extends AppCompatActivity {
         bt_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final UserController controller = new UserController();
                 UserName = userName.getText().toString();
                 UserNumber = userNumber.getText().toString();
                 UserStreet = userStreet.getText().toString();
+                invite = userInvite.getText().toString();
                 user = new UserModel();
+
                 InternetHelper internet = new InternetHelper();
                 boolean b = internet.TestConnection(RegisterActivity.this);
                 if(b){
@@ -163,33 +170,49 @@ public class RegisterActivity extends AppCompatActivity {
                                 user.setUser_name(UserName);
                                 user.setUser_phone(UserNumber);
                                 user.setUser_neighborhood(UserNeighborhood);
-                                user.setUser_score(100);
                                 user.setUser_office(new OfficeHelper().getOffice_1());
                                 if(!UserStreet.isEmpty()){
                                     user.setUser_street(UserStreet);
                                 }else{
                                     user.setUser_street("");
                                 }
-                                UserController controller = new UserController();
-                                controller.VerifyNumber(RegisterActivity.this, UserNumber, new UserController.VolleyCallbackVerifyNumber() {
+                                if(!invite.isEmpty()){
+                                    user.setUser_invite(invite);
+                                    controller.VerifyNumber(RegisterActivity.this, invite, new UserController.VolleyCallbackVerifyNumber() {
                                         @Override
                                         public void onResult(boolean result) {
                                             if(result){
-                                                AuthConfig.Builder authConfigBuilder = new AuthConfig.Builder()
-                                                        .withAuthCallBack(authCallback)
-                                                        .withPhoneNumber("+55" + UserNumber);
-
-                                                Digits.authenticate(authConfigBuilder.build());
+                                                Toast.makeText(RegisterActivity.this, "Número de indicação não existe...", Toast.LENGTH_SHORT).show();
                                             }else{
-                                                Toast.makeText(RegisterActivity.this, "Ops, número já cadastrado!", Toast.LENGTH_SHORT).show();
+                                                controller.VerifyNumber(RegisterActivity.this, UserNumber, new UserController.VolleyCallbackVerifyNumber() {
+                                                    @Override
+                                                    public void onResult(boolean result) {
+                                                        if(result){
+                                                            AuthConfig.Builder authConfigBuilder = new AuthConfig.Builder()
+                                                                    .withAuthCallBack(authCallback)
+                                                                    .withPhoneNumber("+55" + UserNumber);
+
+                                                            Digits.authenticate(authConfigBuilder.build());
+                                                        }else{
+                                                            Toast.makeText(RegisterActivity.this, "Ops, seu número já está cadastrado!", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void error(String error) {
+
+                                                    }
+                                                });
                                             }
                                         }
 
                                         @Override
                                         public void error(String error) {
-
                                         }
                                     });
+                                }else {
+                                    user.setUser_invite("");
+                                }
                             }
                         }else{
                             Toast.makeText(RegisterActivity.this, "Selecione um bairro...", Toast.LENGTH_SHORT).show();
@@ -209,15 +232,18 @@ public class RegisterActivity extends AppCompatActivity {
             public void success(DigitsSession session, String phoneNumber) {
                 if (!phoneNumber.equals(null)) {
 
-                    UserController controller = new UserController();
+                    final UserController controller = new UserController();
+
                     controller.CreateUser(RegisterActivity.this, user, new UserController.VolleyCallback() {
                         @Override
                         public void onSuccess(String result) {
                             if(result != null) {
                                 UserSessionHelper user_session = new UserSessionHelper(RegisterActivity.this);
                                 user_session.createUserLoginSession(user.getUser_name(), user.getUser_phone(),
-                                        user.getUser_neighborhood(), Integer.toString(user.getUser_score()), Integer.parseInt(result),
+                                        user.getUser_neighborhood(), Integer.toString(100), Integer.parseInt(result),
                                         user.getUser_office());
+                                user_session.UpdateRegisterUser("null", "null", "null", "null");
+
                                 Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();

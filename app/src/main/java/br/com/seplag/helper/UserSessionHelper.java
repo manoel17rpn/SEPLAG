@@ -44,6 +44,14 @@ public class UserSessionHelper {
 
     public static final String KEY_OFFICE = "Office";
 
+    public static final String KEY_SEX = "Sex";
+
+    public static final String KEY_SCHOLARITY = "Scholarity";
+
+    public static final String KEY_RESIDENTS = "Residents";
+
+    public static final String KEY_INCOME = "Income";
+
     // Constructor
     public UserSessionHelper(Context context){
         this._context = context;
@@ -59,6 +67,16 @@ public class UserSessionHelper {
     public void UpdateOffice(String new_office){
         editor.putString(KEY_OFFICE, new_office);
         editor.commit();
+    }
+
+    public void UpdateRegisterUser(String sex, String scholarity, String residents, String income){
+        editor.putString(KEY_SEX, sex);
+        editor.putString(KEY_SCHOLARITY, scholarity);
+        editor.putString(KEY_RESIDENTS, residents);
+        editor.putString(KEY_INCOME, income);
+
+        editor.commit();
+
     }
 
     //Create login session
@@ -105,6 +123,14 @@ public class UserSessionHelper {
         user.put(KEY_SCORE, pref.getString(KEY_SCORE, null));
 
         user.put(KEY_ID, Integer.toString(pref.getInt(KEY_ID, 0)));
+
+        user.put(KEY_SEX, pref.getString(KEY_SEX, null));
+
+        user.put(KEY_SCHOLARITY, pref.getString(KEY_SCHOLARITY, null));
+
+        user.put(KEY_RESIDENTS, pref.getString(KEY_RESIDENTS, null));
+
+        user.put(KEY_INCOME, pref.getString(KEY_INCOME, null));
 
         // return user
         return user;

@@ -33,9 +33,13 @@
             android:name="io.fabric.ApiKey"
             android:value="857692764964000eb8e578bffef7090cf5a0fabb" />
 
-        <activity android:name=".view.HowWorks" />
-        <activity android:name=".view.AboutApp" />
-        <activity android:name=".view.AwardsActivity"></activity>
+        <activity
+            android:name=".view.HowWorks" />
+        <activity android:name=".view.CompleteRegister" />
+        <activity android:name=".view.AwardsActivity" />
+        <activity android:name=".view.IntoScreen"
+            android:theme="@style/Theme.Intro">
+        </activity>
     </application>
 
 </manifest>
