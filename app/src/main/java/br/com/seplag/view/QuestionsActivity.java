@@ -53,6 +53,7 @@ public class QuestionsActivity extends AppCompatActivity {
     private InternetHelper internet;
     private UserSessionHelper session;
     private String userSex;
+    private Drawer result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +149,35 @@ public class QuestionsActivity extends AppCompatActivity {
                 }
             }
         });
+
+        result = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(myToolbar)
+                .withSavedInstance(savedInstanceState)
+                .withSelectedItem(3)
+                .withActionBarDrawerToggle(true)
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+
+                        if(position == 4){
+
+                        }
+
+                        if(position == 5){
+
+                        }
+
+                        return true;
+                    }
+                }).build();
+
+        result.addItem(new PrimaryDrawerItem().withName("Áreas"));
+        result.addItem(new DividerDrawerItem());
+        result.addItem(new PrimaryDrawerItem().withName("Todas"));
+        result.addItem(new PrimaryDrawerItem().withName("Educação"));
+        result.addItem(new PrimaryDrawerItem().withName("Infraestrutura"));
+        result.addItem(new PrimaryDrawerItem().withName("Lazer e Esporte"));
 
     }
 
@@ -253,6 +283,15 @@ public class QuestionsActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    public void GetOptionsByArea(String area){
+        controller.ListOptionsByArea(QuestionsActivity.this, area, new QuestionsController.VolleyCallbackGetOptions() {
+            @Override
+            public void ListOptions(ArrayList<GameOptionsModel> options) {
+                list = options;
+            }
+        });
     }
 
 }

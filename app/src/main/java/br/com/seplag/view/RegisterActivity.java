@@ -36,6 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Spinner region;
     private EditText userName;
     private EditText userNumber;
+    private EditText userAge;
     private EditText userStreet;
     private EditText userInvite;
     private Button bt_register;
@@ -48,7 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
     private String UserNeighborhood;
     private String invite;
     private String str_region;
-    private boolean b_invite;
+    private String age;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,8 @@ public class RegisterActivity extends AppCompatActivity {
         userStreet = (EditText) findViewById(R.id.edt_street);
         userInvite = (EditText) findViewById(R.id.edt_invite);
         bt_register = (Button) findViewById(R.id.bt_finalregister);
+        userAge = (EditText) findViewById(R.id.edt_age);
+
 
         final SpinnerAdapter adapterNeighborhoods = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item);
         SpinnerAdapter adapterRegion = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item);
@@ -155,6 +158,7 @@ public class RegisterActivity extends AppCompatActivity {
                 UserNumber = userNumber.getText().toString();
                 UserStreet = userStreet.getText().toString();
                 invite = userInvite.getText().toString();
+                age = userAge.getText().toString();
                 user = new UserModel();
 
                 InternetHelper internet = new InternetHelper();
@@ -166,10 +170,13 @@ public class RegisterActivity extends AppCompatActivity {
                                 Toast.makeText(RegisterActivity.this, "Por favor, insira o seu nome...", Toast.LENGTH_SHORT).show();
                             }else if(UserNumber.length() != 11){
                                 Toast.makeText(RegisterActivity.this, "Preencha corretamente o seu número de celular...", Toast.LENGTH_SHORT).show();
+                            }else if(age.isEmpty()){
+                                Toast.makeText(RegisterActivity.this, "Por favor, insira a sua idade...", Toast.LENGTH_SHORT).show();
                             }else{
                                 user.setUser_name(UserName);
                                 user.setUser_phone(UserNumber);
                                 user.setUser_neighborhood(UserNeighborhood);
+                                user.setUser_age(age);
                                 user.setUser_office(new OfficeHelper().getOffice_1());
                                 if(!UserStreet.isEmpty()){
                                     user.setUser_street(UserStreet);

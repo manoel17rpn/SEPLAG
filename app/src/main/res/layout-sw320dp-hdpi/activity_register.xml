@@ -65,6 +65,24 @@
                         android:inputType="phone" />
                 </android.support.design.widget.TextInputLayout>
 
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp">
+
+                    <EditText
+                        android:id="@+id/edt_age"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Idade*"
+                        android:maxLength="2"
+                        android:digits="1234567890"
+                        android:maxLines="1"
+                        android:imeOptions="actionNext"
+                        android:inputType="number" />
+                </android.support.design.widget.TextInputLayout>
+
+
                 <android.support.v7.widget.AppCompatSpinner
                     android:id="@+id/region"
                     style="@style/Widget.AppCompat.Spinner.Underlined"

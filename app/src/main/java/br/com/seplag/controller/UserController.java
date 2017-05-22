@@ -84,6 +84,7 @@ public class UserController {
                 params.put("user_score", Integer.toString(user.getUser_score()));
                 params.put("user_office", user.getUser_office());
                 params.put("user_phone_invite", user.getUser_invite());
+                params.put("user_age", user.getUser_age());
 
                 return params;
             }

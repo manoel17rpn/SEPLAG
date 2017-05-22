@@ -20,6 +20,15 @@ public class UserModel implements Serializable{
     private String numbers_residents;
     private String user_office;
     private String user_invite;
+    private String user_age;
+
+    public String getUser_age() {
+        return user_age;
+    }
+
+    public void setUser_age(String user_age) {
+        this.user_age = user_age;
+    }
 
     public String getUser_invite() {
         return user_invite;

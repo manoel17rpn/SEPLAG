@@ -44,6 +44,7 @@ import okhttp3.OkHttpClient;
 public class QuestionsController {
     private static final String URL_GET_OPTIONS = "http://usepio.com/WebServiceSeplag/public/rest-api/game-methods/options/get/";
     private static final String URL_POST_ANSWER = "http://usepio.com/WebServiceSeplag/public/rest-api/game-methods/aux/create";
+    private static final String URL_GET_OPTIONS_AREA = "http://usepio.com/WebServiceSeplag/public/rest-api/game-methods/options/getbyarea/";
     private RetryPolicy policy = new DefaultRetryPolicy(45000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
     private ArrayList<GameOptionsModel> listOptions;
 
@@ -55,6 +56,59 @@ public class QuestionsController {
 
         // prepare the Request
         JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, URL_GET_OPTIONS + user_id, null,
+                new Response.Listener<JSONArray>()
+                {
+                    @Override
+                    public void onResponse(JSONArray array) {
+                        JSONObject jsonObject;
+
+                        try {
+
+                            for(int i = 0; i < array.length(); i++){
+                                GameOptionsModel game = new GameOptionsModel();
+                                jsonObject = new JSONObject(array.getJSONObject(i).toString());
+                                game.setName_list(jsonObject.getString("name_list"));
+                                game.setOptions_id(jsonObject.getInt("options_id"));
+                                game.setOption_one(jsonObject.getString("option_one"));
+                                game.setOption_two(jsonObject.getString("option_two"));
+                                game.setOption_three(jsonObject.getString("option_three"));
+                                game.setOption_four(jsonObject.getString("option_four"));
+                                game.setArea_questions(jsonObject.getString("area_questions"));
+
+                                listOptions.add(game);
+                            }
+
+                            callback.ListOptions(listOptions);
+                            dialog.dismiss();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+
+                        dialog.dismiss();
+                    }
+                }
+        );
+
+        getRequest.setRetryPolicy(policy);
+        queue.add(getRequest);
+
+        return listOptions;
+    }
+
+    public List<GameOptionsModel> ListOptionsByArea(final Context context, String area_questions, final VolleyCallbackGetOptions callback){
+        final ProgressDialog dialog = ProgressDialog.show(context, "Carregando", "Buscando opções, por favor aguarde...", true);
+        listOptions = new ArrayList<>();
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        // prepare the Request
+        JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, URL_GET_OPTIONS + area_questions, null,
                 new Response.Listener<JSONArray>()
                 {
                     @Override
