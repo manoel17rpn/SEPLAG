@@ -1,18 +1,27 @@
 package br.com.seplag.view;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -22,6 +31,12 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.digits.sdk.android.Digits;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.LatLng;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -44,7 +59,7 @@ import br.com.seplag.helper.InternetHelper;
 import br.com.seplag.helper.UserSessionHelper;
 import br.com.seplag.model.ProgramModel;
 
-public class ProgramActivity extends AppCompatActivity {
+public class ProgramActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener  {
     private Spinner activities;
     private Spinner neighborhoods;
     private Spinner region;
@@ -66,17 +81,39 @@ public class ProgramActivity extends AppCompatActivity {
     private String image_encode;
     private Bitmap bitmap;
     private int PICK_IMAGE_REQUEST = 1;
+    private int TAKE_PICTURE = 2;
     private Uri filePath;
     private ImageView tv_image;
     private String activite = "";
     private String str_region = "";
     private String neighborhood = "";
-    private String str_program =  "";
+    private String str_program = "";
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLocation;
+    private LocationManager mLocationManager;
+    private LocationRequest mLocationRequest;
+    private double latitude;
+    private double longitude;
+    private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
+    private long FASTEST_INTERVAL = 2000; /* 2 sec */
+    private boolean keepProgram = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_program);
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */,
+                        this /* OnConnectionFailedListener */)
+                .addConnectionCallbacks(this)
+                .addApi(LocationServices.API)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .build();
+
+        mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
 
         final Intent intent = getIntent();
         Bundle params = intent.getExtras();
@@ -224,7 +261,7 @@ public class ProgramActivity extends AppCompatActivity {
                     String reference_point = referencepoint.getText().toString();
                     String street_name = street.getText().toString();
                     String user_comment = comment.getText().toString();
-
+                    checkLocation();
                     ProgramController controller = new ProgramController();
 
                     if(!activite.equals("Selecione uma Atividade*")){
@@ -365,17 +402,10 @@ public class ProgramActivity extends AppCompatActivity {
         bt_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showFileChooser();
+                selectImage();
             }
         });
 
-    }
-
-    private void showFileChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
 
     @Override
@@ -393,6 +423,11 @@ public class ProgramActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        if (requestCode == TAKE_PICTURE && resultCode == RESULT_OK && data != null){
+            bitmap = (Bitmap) data.getExtras().get("data");//this is your bitmap image and now you can do whatever you want with this
+            tv_image.setVisibility(View.VISIBLE);
+            tv_image.setImageBitmap(bitmap);
         }
     }
 
@@ -435,4 +470,147 @@ public class ProgramActivity extends AppCompatActivity {
         return  activities;
     }
 
+    private void selectImage() {
+        final CharSequence[] options = { "Camêra", "Galeria","Cancelar" };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProgramActivity.this);
+        builder.setTitle("Adicionar Foto!");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals("Camêra")) {
+                    Intent cameraIntent = new  Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(cameraIntent, TAKE_PICTURE);
+                } else if (options[item].equals("Galeria")) {
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+                } else if (options[item].equals("Cancelar")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    protected void startLocationUpdates() {
+        // Create the location request
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(UPDATE_INTERVAL)
+                .setFastestInterval(FASTEST_INTERVAL);
+        // Request location updates
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                mLocationRequest, this);
+        Log.d("reque", "--->>>>");
+    }
+
+    private boolean checkLocationActived() {
+        if(!isLocationEnabled())
+            showAlert();
+        return isLocationEnabled();
+    }
+
+    private void checkLocation(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+
+        startLocationUpdates();
+
+        mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        if(mLocation == null){
+            startLocationUpdates();
+        }
+        if (mLocation != null) {
+            latitude = mLocation.getLatitude();
+            longitude = mLocation.getLongitude();
+
+            program.setLatitude(Double.toString(latitude));
+            program.setLongitude(Double.toString(longitude));
+        }
+    }
+
+    private void showAlert() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("Localização")
+                .setMessage("Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
+                        "use this app")
+                .setPositiveButton("Ativar Localização", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+
+                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(myIntent);
+                    }
+                })
+                .setNegativeButton("Continuar sem Localização", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        keepProgram = true;
+                    }
+                });
+        dialog.show();
+    }
+
+    private boolean isLocationEnabled() {
+        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
 }

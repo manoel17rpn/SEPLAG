@@ -5,17 +5,9 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.digits.sdk.android.Digits;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
-import com.twitter.sdk.android.core.TwitterCore;
-
 import br.com.seplag.helper.IntroHelper;
-import io.fabric.sdk.android.Fabric;
-import java.util.Map;
 
 import br.com.seplag.R;
-import br.com.seplag.controller.UserController;
-import br.com.seplag.helper.InternetHelper;
 import br.com.seplag.helper.UserSessionHelper;
 
 public class SplashActivity extends AppCompatActivity {
@@ -45,7 +37,7 @@ public class SplashActivity extends AppCompatActivity {
                         Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                         startActivity(intent);
                     }else{
-                        Intent intent = new Intent(SplashActivity.this, IntoScreen.class);
+                        Intent intent = new Intent(SplashActivity.this, IntroScreen.class);
                         startActivity(intent);
                     }
                 }

@@ -15,6 +15,24 @@ public class ProgramModel {
     private String user_comment;
     private String image;
     private String poste;
+    private String latitude;
+    private String longitude;
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
 
     public String getPoste() {
         return poste;

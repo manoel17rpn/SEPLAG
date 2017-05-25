@@ -25,6 +25,9 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import br.com.seplag.R;
@@ -54,6 +57,8 @@ public class QuestionsActivity extends AppCompatActivity {
     private UserSessionHelper session;
     private String userSex;
     private Drawer result;
+    private List<String> listAreas;
+    private ArrayList<GameOptionsModel> listaReserva;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +73,7 @@ public class QuestionsActivity extends AppCompatActivity {
         bt_option3 = (Button) findViewById(R.id.answer3);
         bt_option4 = (Button) findViewById(R.id.answer4);
         tv_area = (TextView) findViewById(R.id.tv_areaquestions);
+        listAreas = new ArrayList<>();
 
         session = new UserSessionHelper(QuestionsActivity.this);
         Map<String, String> user = session.getUserDetails();
@@ -82,6 +88,10 @@ public class QuestionsActivity extends AppCompatActivity {
 
         if(params != null){
             list = (ArrayList<GameOptionsModel>) params.get("list");
+            listaReserva = (ArrayList<GameOptionsModel>) params.get("list");
+            for(GameOptionsModel game : list){
+                listAreas.add(game.getArea_questions());
+            }
             ChangeButtonText(count);
         }
 
@@ -154,18 +164,30 @@ public class QuestionsActivity extends AppCompatActivity {
                 .withActivity(this)
                 .withToolbar(myToolbar)
                 .withSavedInstance(savedInstanceState)
-                .withSelectedItem(3)
+                .withSelectedItemByPosition(2)
                 .withActionBarDrawerToggle(true)
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
 
-                        if(position == 4){
+                        if(position == 2){
+                            GetAllOptions();
+                            result.closeDrawer();
+                        }
 
+                        if(position == 3){
+                            GetOptionsByArea("Educação");
+                            result.closeDrawer();
+                        }
+
+                        if(position == 4){
+                            GetOptionsByArea("Infraestrutura");
+                            result.closeDrawer();
                         }
 
                         if(position == 5){
-
+                            GetOptionsByArea("Lazer e Esporte");
+                            result.closeDrawer();
                         }
 
                         return true;
@@ -226,13 +248,15 @@ public class QuestionsActivity extends AppCompatActivity {
     public void SendAnswerAndMoreQuestions(String option){
         int options_id = list.get(count).getOptions_id();
         String name_list = list.get(count).getName_list();
-        controller = new QuestionsController();
+        final GameOptionsModel gop = list.get(count);
         controller = new QuestionsController();
         controller.CreateAnswer(QuestionsActivity.this, AuxObject(options_id, option, name_list),
                 new ProgramController.VolleyCallback() {
                     @Override
                     public void onSuccess(String result) {
-                        count++;
+                        listaReserva.remove(gop);
+                        list.remove(gop);
+                        //count++;
                         ChangeButtonText(count);
                     }
 
@@ -251,6 +275,7 @@ public class QuestionsActivity extends AppCompatActivity {
         //Fazer requisição e ao final encerrar, sem count++
         int options_id = list.get(count).getOptions_id();
         String name_list = list.get(count).getName_list();
+        final GameOptionsModel gop = list.get(count);
         controller = new QuestionsController();
         controller.CreateAnswer(QuestionsActivity.this, AuxObject(options_id, option, name_list),
                 new ProgramController.VolleyCallback() {
@@ -258,20 +283,38 @@ public class QuestionsActivity extends AppCompatActivity {
                     public void onSuccess(String result) {
                         AlertDialog alertConnection;
 
-                        AlertDialog.Builder builderConnection = new AlertDialog.Builder(QuestionsActivity.this);
-                        builderConnection.setTitle(getResources().getString(R.string.app_name));
-                        builderConnection.setMessage("Obrigado pela sua contribuição, ela é muito importante para" +
-                                " Caruaru! Em breve teremos mais opções!");
-                        builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(QuestionsActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
-                            }
-                        });
-                        alertConnection = builderConnection.create();
-                        alertConnection.show();
+                        if(!(listaReserva.size() > 1)){
+                            AlertDialog.Builder builderConnection = new AlertDialog.Builder(QuestionsActivity.this);
+                            builderConnection.setTitle(getResources().getString(R.string.app_name));
+                            builderConnection.setMessage("Uau, você respondeu todas! Obrigado pela sua contribuição, ela é muito importante para" +
+                                    " Caruaru! Em breve teremos mais opções!");
+                            builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(QuestionsActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
+                            alertConnection = builderConnection.create();
+                            alertConnection.show();
+                        }else{
+
+                            AlertDialog.Builder builderConnection = new AlertDialog.Builder(QuestionsActivity.this);
+                            builderConnection.setTitle(getResources().getString(R.string.app_name));
+                            builderConnection.setMessage("Parabéns! Você respondeu todas nesta área, mas outras áreas esperam por você!");
+                            builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    listaReserva.remove(gop);
+                                    list.remove(gop);
+                                    GetAllOptions();
+                                }
+                            });
+                            alertConnection = builderConnection.create();
+                            alertConnection.show();
+                        }
                     }
 
                     @Override
@@ -286,12 +329,35 @@ public class QuestionsActivity extends AppCompatActivity {
     }
 
     public void GetOptionsByArea(String area){
-        controller.ListOptionsByArea(QuestionsActivity.this, area, new QuestionsController.VolleyCallbackGetOptions() {
-            @Override
-            public void ListOptions(ArrayList<GameOptionsModel> options) {
-                list = options;
+        ArrayList<GameOptionsModel> lista = new ArrayList<>();
+        if(listAreas.contains(area)){
+            for(int i = 0; i < listaReserva.size(); i++){
+                if(listaReserva.get(i).getArea_questions().equals(area)){
+                    lista.add(listaReserva.get(i));
+                }
             }
-        });
+            list = lista;
+            count = 0;
+            ChangeButtonText(count);
+        }else{
+            CreateDialog(QuestionsActivity.this, "Você já respondeu todas nessa área, em breve teremos mais!");
+            result.setSelection(0);
+        }
+        /*if(listaReserva.size() > 0){
+            list = listaReserva;
+            count = 0;
+            ChangeButtonText(count);
+        }else{
+            CreateDialog(QuestionsActivity.this, "Você já respondeu todas, em breve teremos mais!");
+        }*/
+
+    }
+
+    public void GetAllOptions(){
+        result.setSelection(0);
+        list = listaReserva;
+        count = 0;
+        ChangeButtonText(0);
     }
 
 }

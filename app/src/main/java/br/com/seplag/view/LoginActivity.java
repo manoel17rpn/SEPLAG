@@ -102,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void success(DigitsSession session, String phoneNumber) {
                 if (!phoneNumber.equals(null)) {
+                    user.setUser_phone(phoneNumber);
                     UserSessionHelper user_session = new UserSessionHelper(LoginActivity.this);
                     user_session.createUserLoginSession(user.getUser_name(), user.getUser_phone(),
                             user.getUser_neighborhood(), Integer.toString(user.getUser_score()), user.getUser_id(),

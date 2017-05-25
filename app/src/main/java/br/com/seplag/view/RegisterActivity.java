@@ -142,6 +142,13 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 UserNeighborhood = neighborhoods.getItemAtPosition(position).toString();
+                if(str_region.equals("Zona Urbana")){
+                    if(UserNeighborhood.equals("SÃO FRANCISCO") || UserNeighborhood.equals("MONTE DO BOM JESUS")||
+                            UserNeighborhood.equals("DIVINÓPOLIS") || UserNeighborhood.equals("CENTRO")){
+                        Toast.makeText(RegisterActivity.this, "TGS CENTRO", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
             }
 
             @Override
@@ -238,6 +245,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void success(DigitsSession session, String phoneNumber) {
                 if (!phoneNumber.equals(null)) {
+                    user.setUser_phone(phoneNumber);
 
                     final UserController controller = new UserController();
 

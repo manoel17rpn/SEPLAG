@@ -8,5 +8,6 @@
         <item>Pintura de meio-fio</item>
         <item>Capinação</item>
     </string-array>
+    <string name="title_activity_maps">Map</string>
 
 </resources>
