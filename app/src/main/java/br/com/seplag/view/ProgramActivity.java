@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.digits.sdk.android.Digits;
@@ -96,7 +97,8 @@ public class ProgramActivity extends AppCompatActivity implements GoogleApiClien
     private double longitude;
     private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
-    private boolean keepProgram = false;
+    private TextView txt_tgs;
+    private TextView txt_tgs1;
 
 
     @Override
@@ -147,6 +149,8 @@ public class ProgramActivity extends AppCompatActivity implements GoogleApiClien
         bt_program = (Button) findViewById(R.id.bt_program);
         bt_photo = (Button) findViewById(R.id.photo);
         tv_image = (ImageView) findViewById(R.id.success_photo);
+        txt_tgs = (TextView) findViewById(R.id.txt_tgs);
+        txt_tgs1 = (TextView) findViewById(R.id.txt_tgs1);
 
         final SpinnerAdapter adapterNeighborhoods = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item);
         SpinnerAdapter adapterPrograms = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item);
@@ -244,6 +248,64 @@ public class ProgramActivity extends AppCompatActivity implements GoogleApiClien
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 neighborhood = neighborhoods.getItemAtPosition(position).toString();
+                if(str_region.equals("Zona Urbana")){
+                    if(neighborhood.equals("SÃO FRANCISCO") || neighborhood.equals("MONTE DO BOM JESUS")||
+                            neighborhood.equals("DIVINÓPOLIS") || neighborhood.equals("CENTRO")){
+
+                        txt_tgs.setVisibility(View.VISIBLE);
+                        txt_tgs.setText("Você está na no TGS Centro");
+                        txt_tgs1.setVisibility(View.VISIBLE);
+                    }
+                    if(neighborhood.equals("NOVA CARUARU") || neighborhood.equals("SEVERINO AFONSO")||
+                            neighborhood.equals("LUIZ GONZAGA") || neighborhood.equals("MAURICIO DE NASSAU") ||
+                            neighborhood.equals("FERNANDO LYRA") || neighborhood.equals("UNIVERSITÁRIO")||
+                            neighborhood.equals("LAGOA DE ALGODÃO") || neighborhood.equals("PARQUE DA CIDADE")){
+
+                        txt_tgs.setVisibility(View.VISIBLE);
+                        txt_tgs.setText("Você está na no TGS Norte");
+                        txt_tgs1.setVisibility(View.VISIBLE);
+                    }
+                    if(neighborhood.equals("RENDEIRAS") || neighborhood.equals("ALTO DA BALANÇA")||
+                            neighborhood.equals("CEDRO") || neighborhood.equals("CIDADE JARDIM") ||
+                            neighborhood.equals("RIACHÃO") || neighborhood.equals("SALGADO")||
+                            neighborhood.equals("SÃO JOÃO DA ESCÓCIA") || neighborhood.equals("LOT. SERRANÓPOLIS")||
+                            neighborhood.equals("MORADA NOVA") || neighborhood.equals("SERRA DO VALE")){
+
+                        txt_tgs.setVisibility(View.VISIBLE);
+                        txt_tgs.setText("Você está na no TGS Leste");
+                        txt_tgs1.setVisibility(View.VISIBLE);
+                    }
+                    if(neighborhood.equals("PETRÓPOLIS") || neighborhood.equals("SANTA ROSA")||
+                            neighborhood.equals("VASSOURAL") || neighborhood.equals("JARDIM LIBERDADE") ||
+                            neighborhood.equals("ALTO DA BANANA") || neighborhood.equals("INDIANÓPOLIS")||
+                            neighborhood.equals("INOCOOP") || neighborhood.equals("JOSÉ LIBERATO I E II")||
+                            neighborhood.equals("AGAMENON MAGALHÃES") || neighborhood.equals("WILTON LIRA")||
+                            neighborhood.equals("PITOMBEIRAS I E II") || neighborhood.equals("ENCANTO DA SERRA")||
+                            neighborhood.equals("ADALGISA NUNES I, II E III") || neighborhood.equals("ROSANÓPOLIS")||
+                            neighborhood.equals("PINHEIRÓPOLIS")){
+
+                        txt_tgs.setVisibility(View.VISIBLE);
+                        txt_tgs.setText("Você está na no TGS Sul");
+                        txt_tgs1.setVisibility(View.VISIBLE);
+                    }
+                    if(neighborhood.equals("VILA ANDORINHA") || neighborhood.equals("MARIA AUXILIADORA")||
+                            neighborhood.equals("BOA VISTA I E II") || neighborhood.equals("JARDIM PANORAMA I E II") ||
+                            neighborhood.equals("JARDIM BOA VISTA") || neighborhood.equals("CAIUCÁ")||
+                            neighborhood.equals("JOÃO MOTA") || neighborhood.equals("JOSÉ CARLOS DE OLIVEIRA")||
+                            neighborhood.equals("VILA KENNEDY") || neighborhood.equals("SOL POENTE")||
+                            neighborhood.equals("VILA DO AEROPORTO") || neighborhood.equals("DEMÓSTENES VERAS")||
+                            neighborhood.equals("LOT. MOURA BRASIL") || neighborhood.equals("LOT. JOÃO BARRETO")||
+                            neighborhood.equals("LOT. NOVO MUNDO") || neighborhood.equals("VILA PADRE INÁCIO")){
+
+                        txt_tgs.setVisibility(View.VISIBLE);
+                        txt_tgs.setText("Você está na no TGS Oeste");
+                        txt_tgs1.setVisibility(View.VISIBLE);
+                    }
+
+                }else{
+                    txt_tgs.setVisibility(View.GONE);
+                    txt_tgs1.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -586,7 +648,6 @@ public class ProgramActivity extends AppCompatActivity implements GoogleApiClien
                 .setNegativeButton("Continuar sem Localização", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                        keepProgram = true;
                     }
                 });
         dialog.show();

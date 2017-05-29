@@ -6,16 +6,15 @@ package br.com.seplag.helper;
 
 public class OfficeHelper {
 
-    private String office_1 = "Assistente";
-    private String office_2 = "Assistente Técnico";
-    private String office_3 = "Coordenador";
-    private String office_4 = "Chefe de Gabinete";
-    private String office_5 = "Gerente";
-    private String office_6 = "Gerente Geral";
-    private String office_7 = "Secretário Executivo";
-    private String office_8 = "Acessor Especial";
-    private String office_9 = "Secretário de Governo";
-    private String office_10 = "Prefeito";
+    private String office_1 = "Assistente Virtual";
+    private String office_2 = "Assistente Técnico Virtual";
+    private String office_3 = "Coordenador Virtual";
+    private String office_4 = "Chefe de Gabinete Virtual";
+    private String office_5 = "Gerente Virtual";
+    private String office_6 = "Gerente Geral Virtual";
+    private String office_7 = "Secretário Executivo Virtual";
+    private String office_8 = "Acessor Especial Virtual";
+    private String office_9 = "Secretário de Governo Virtual";
 
     public String getOffice_1() {
         return office_1;
@@ -53,9 +52,6 @@ public class OfficeHelper {
         return office_9;
     }
 
-    public String getOffice_10() {
-        return office_10;
-    }
 
     public String getOffice(int score){
         String office = "";
@@ -73,12 +69,10 @@ public class OfficeHelper {
             office = getOffice_6();
         }else if(score >= 6000 && score < 7000){
             office = getOffice_7();
-        }else if(score >= 7000 && score < 8000){
+        }else if(score >= 7000 && score < 10000){
             office = getOffice_8();
-        }else if(score >= 8000 && score < 10000){
+        }else if(score > 10000){
             office = getOffice_9();
-        }else if(score >= 10000){
-            office = getOffice_10();
         }
 
         return office;

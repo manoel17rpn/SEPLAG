@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "493059925887",
+    "firebase_url": "https://seplag-168521.firebaseio.com",
+    "project_id": "seplag-168521",
+    "storage_bucket": "seplag-168521.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:493059925887:android:51cf293f9f01002e",
+        "android_client_info": {
+          "package_name": "br.com.seplag"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "493059925887-vog3fvsem1dhhcpkqedd9tb2g5ujgdmj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.seplag",
+            "certificate_hash": "b9e6200b50a9ec4f91d6597420fbd9b01cca3d5f"
+          }
+        },
+        {
+          "client_id": "493059925887-am3vkghtev4d9bec30c26e5s5pea8k8j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABQsGE3eejafUzm-e3cvci_wa-0YXzsLc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "493059925887-am3vkghtev4d9bec30c26e5s5pea8k8j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

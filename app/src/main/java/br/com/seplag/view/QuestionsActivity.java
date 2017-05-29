@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -176,17 +177,27 @@ public class QuestionsActivity extends AppCompatActivity {
                         }
 
                         if(position == 3){
-                            GetOptionsByArea("Educação");
+                            GetOptionsByArea("Qualidade de Vida");
                             result.closeDrawer();
                         }
 
                         if(position == 4){
-                            GetOptionsByArea("Infraestrutura");
+                            GetOptionsByArea("Educação");
                             result.closeDrawer();
                         }
 
                         if(position == 5){
-                            GetOptionsByArea("Lazer e Esporte");
+                            GetOptionsByArea("Saúde");
+                            result.closeDrawer();
+                        }
+
+                        if(position == 6){
+                            GetOptionsByArea("Esporte, Cultura e Lazer");
+                            result.closeDrawer();
+                        }
+
+                        if(position == 7){
+                            GetOptionsByArea("Direitos das Minorias");
                             result.closeDrawer();
                         }
 
@@ -197,9 +208,11 @@ public class QuestionsActivity extends AppCompatActivity {
         result.addItem(new PrimaryDrawerItem().withName("Áreas"));
         result.addItem(new DividerDrawerItem());
         result.addItem(new PrimaryDrawerItem().withName("Todas"));
+        result.addItem(new PrimaryDrawerItem().withName("Qualidade de Vida"));
         result.addItem(new PrimaryDrawerItem().withName("Educação"));
-        result.addItem(new PrimaryDrawerItem().withName("Infraestrutura"));
-        result.addItem(new PrimaryDrawerItem().withName("Lazer e Esporte"));
+        result.addItem(new PrimaryDrawerItem().withName("Saúde"));
+        result.addItem(new PrimaryDrawerItem().withName("Esporte, Cultura e Lazer"));
+        result.addItem(new PrimaryDrawerItem().withName("Direitos das Minorias"));
 
     }
 

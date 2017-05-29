@@ -32,10 +32,10 @@
             android:paddingLeft="8dp">
 
             <ImageView
-                android:layout_width="345dp"
+                android:layout_width="match_parent"
                 android:layout_height="320dp"
                 android:layout_marginTop="58dp"
-                android:src="@drawable/caruaru"
+                android:src="@drawable/mobiliza_caruaru"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/image"/>
 
