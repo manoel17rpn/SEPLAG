@@ -32,10 +32,10 @@ import br.com.seplag.view.ProgramActivity;
 public class ProgramFragment extends Fragment{
     private RecyclerView mRecyclerView;
     private List<Program> mList = new ArrayList<>();
-    String[] Titulo = new String[]{"Cidade Limpa", "Praça Nova", "Ilumina Caruaru"};
+    String[] Titulo = new String[]{"Cidade Limpa", "Ilumina Caruaru"};
     String[] Info = new String[]{"Atividades de limpeza do município.",
-            "Manutenção da iluminação pública.", "O Praça Nova é um programa que construir novas praças."};
-    int[] photos = new int[]{R.drawable.cidadelimpa, R.drawable.cidadelimpa, R.drawable.cidadelimpa};
+            "Manutenção da iluminação pública."};
+    int[] photos = new int[]{R.drawable.cidadelimpa, R.drawable.cidadelimpa};
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,7 +63,7 @@ public class ProgramFragment extends Fragment{
     public void initializeList() {
         mList.clear();
 
-        for(int i = 0; i < 3; i++){
+        for(int i = 0; i < 2; i++){
             Program item = new Program();
             item.setTitleProgram(Titulo[i]);
             item.setInfoProgram(Info[i]);

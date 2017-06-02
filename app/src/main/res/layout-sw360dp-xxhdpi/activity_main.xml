@@ -29,7 +29,7 @@
         <android.support.v7.widget.CardView
             android:id="@+id/card_questions"
             android:layout_width="310dp"
-            android:layout_height="265dp"
+            android:layout_height="220dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="16dp"
@@ -43,10 +43,10 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="210dp"
+                    android:layout_height="175dp"
                     android:layout_alignParentTop="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/lampada" />
+                    android:src="@drawable/caruaru_que_precisamos" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -62,7 +62,7 @@
         <android.support.v7.widget.CardView
             android:id="@+id/card_programs"
             android:layout_width="310dp"
-            android:layout_height="265dp"
+            android:layout_height="220dp"
             app:cardCornerRadius="3dp"
             app:cardElevation="3dp"
             android:layout_marginBottom="16dp"
@@ -76,10 +76,10 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="210dp"
+                    android:layout_height="175dp"
                     android:layout_alignParentTop="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/lampada"/>
+                    android:src="@drawable/programas_prefeitura"/>
 
                 <TextView
                     android:layout_width="wrap_content"

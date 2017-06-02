@@ -61,6 +61,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/txt_tgs"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:textSize="10sp"
                 android:visibility="gone"/>
             <TextView
@@ -68,6 +70,8 @@
                 android:layout_height="wrap_content"
                 android:text="TGS - Território de Gestão Sustentável"
                 android:textSize="10sp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:id="@+id/txt_tgs1"
                 android:visibility="gone"/>
 

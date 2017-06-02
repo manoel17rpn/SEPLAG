@@ -46,7 +46,7 @@
                     android:layout_height="170dp"
                     android:layout_alignParentTop="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/lampada" />
+                    android:src="@drawable/caruaru_que_precisamos" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -79,7 +79,7 @@
                     android:layout_height="170dp"
                     android:layout_alignParentTop="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/lampada"/>
+                    android:src="@drawable/programas_prefeitura"/>
 
                 <TextView
                     android:layout_width="wrap_content"
