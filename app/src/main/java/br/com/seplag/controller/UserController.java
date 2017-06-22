@@ -2,8 +2,6 @@ package br.com.seplag.controller;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.net.NetworkInfo;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,7 +14,6 @@ import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -28,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.seplag.model.UserModel;
-import br.com.seplag.view.MainActivity;
 
 /**
  * Created by Manoel Neto on 29/04/2017.
@@ -81,7 +77,6 @@ public class UserController {
                 params.put("user_phone", user.getUser_phone());
                 params.put("user_neighborhood", user.getUser_neighborhood());
                 params.put("user_street", user.getUser_street());
-                params.put("user_score", Integer.toString(user.getUser_score()));
                 params.put("user_office", user.getUser_office());
                 params.put("user_phone_invite", user.getUser_invite());
                 params.put("user_age", user.getUser_age());

@@ -2,14 +2,14 @@ package br.com.seplag.view;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.digits.sdk.android.Digits;
+import com.google.firebase.auth.FirebaseAuth;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -31,6 +31,7 @@ public class ListProgramsActivity extends AppCompatActivity {
     String userName;
     String userScore;
     String userOffice;
+    String userSex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,7 @@ public class ListProgramsActivity extends AppCompatActivity {
         userName = mapUser.get("Name");
         userScore = mapUser.get("Score");
         userOffice = mapUser.get("Office");
+        userSex = mapUser.get("Sex");
 
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -89,27 +91,47 @@ public class ListProgramsActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
 
-                        if(position == 5){
-                            result.closeDrawer();
-                            Intent intent = new Intent(ListProgramsActivity.this, CompleteRegister.class);
-                            startActivity(intent);
-                        }
+                        if (userSex.equals("null")) {
+                            if (position == 5) {
+                                result.closeDrawer();
+                                Intent intent = new Intent(ListProgramsActivity.this, CompleteRegister.class);
+                                startActivity(intent);
+                                finish();
+                            }
 
-                        if(position == 6){
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        Digits.logout();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                            if (position == 6) {
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            FirebaseAuth.getInstance().signOut();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
                                     }
-                                }
-                            }, 3000);
-                            session.logoutUser();
-                            result.closeDrawer();
-                            Intent intent = new Intent(ListProgramsActivity.this, LoginActivity.class);
-                            startActivity(intent);
+                                }, 3000);
+                                session.logoutUser();
+                                result.closeDrawer();
+                                Intent intent = new Intent(ListProgramsActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                            }
+                        } else {
+                            if (position == 5) {
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            FirebaseAuth.getInstance().signOut();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }, 3000);
+                                session.logoutUser();
+                                result.closeDrawer();
+                                Intent intent = new Intent(ListProgramsActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                            }
                         }
 
                         return true;

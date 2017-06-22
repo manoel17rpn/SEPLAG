@@ -8,8 +8,26 @@ public class GameAuxModel {
     private int aux_id;
     private int user_id;
     private int options_id;
-    private String name_list;
+    private String area;
     private String user_answers;
+    private String latitude;
+    private String longitude;
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
 
     public int getAux_id() {
         return aux_id;
@@ -27,12 +45,12 @@ public class GameAuxModel {
         this.user_id = user_id;
     }
 
-    public String getName_list() {
-        return name_list;
+    public String getArea() {
+        return area;
     }
 
-    public void setName_list(String name_list) {
-        this.name_list = name_list;
+    public void setArea(String name_list) {
+        this.area = name_list;
     }
 
     public String getUser_answers() {
@@ -57,7 +75,7 @@ public class GameAuxModel {
                 "aux_id=" + aux_id +
                 ", user_id=" + user_id +
                 ", options_id=" + options_id +
-                ", name_list='" + name_list + '\'' +
+                ", name_list='" + area + '\'' +
                 ", user_answers='" + user_answers + '\'' +
                 '}';
     }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SEPLAG</string>
+    <string name="app_name">Mobiliza</string>
 
     <string-array name="activities">
         <item>Selecione uma Atividade*</item>

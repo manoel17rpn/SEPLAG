@@ -8,19 +8,19 @@ import java.io.Serializable;
 
 public class GameOptionsModel implements Serializable{
     private int options_id;
-    private String name_list;
+    private String axis;
     private String option_one;
     private String option_two;
     private String option_three;
     private String option_four;
-    private String area_questions;
+    private String area;
 
     public String getArea_questions() {
-        return area_questions;
+        return area;
     }
 
-    public void setArea_questions(String area_questions) {
-        this.area_questions = area_questions;
+    public void setArea_questions(String area) {
+        this.area = area;
     }
 
     public String getOption_three() {
@@ -47,12 +47,12 @@ public class GameOptionsModel implements Serializable{
         this.options_id = options_id;
     }
 
-    public String getName_list() {
-        return name_list;
+    public String getAxis() {
+        return axis;
     }
 
-    public void setName_list(String name_list) {
-        this.name_list = name_list;
+    public void setAxis(String name_list) {
+        this.axis = name_list;
     }
 
     public String getOption_one() {
@@ -75,7 +75,7 @@ public class GameOptionsModel implements Serializable{
     public String toString() {
         return "GameOptionsModel{" +
                 "options_id=" + options_id +
-                ", name_list='" + name_list + '\'' +
+                ", axis='" + axis + '\'' +
                 ", option_one='" + option_one + '\'' +
                 ", option_two='" + option_two + '\'' +
                 ", option_three='" + option_three + '\'' +

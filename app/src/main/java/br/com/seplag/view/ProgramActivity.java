@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -18,7 +19,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
@@ -31,13 +31,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.digits.sdk.android.Digits;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -46,7 +45,6 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -99,6 +97,7 @@ public class ProgramActivity extends AppCompatActivity implements GoogleApiClien
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
     private TextView txt_tgs;
     private TextView txt_tgs1;
+    String userSex;
 
 
     @Override
@@ -133,6 +132,7 @@ public class ProgramActivity extends AppCompatActivity implements GoogleApiClien
         userScore = mapUser.get("Score");
         userOffice = mapUser.get("Office");
         userId = mapUser.get("ID");
+        userSex = mapUser.get("Sex");
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitle(str_program);
@@ -323,73 +323,79 @@ public class ProgramActivity extends AppCompatActivity implements GoogleApiClien
                     String reference_point = referencepoint.getText().toString();
                     String street_name = street.getText().toString();
                     String user_comment = comment.getText().toString();
-                    checkLocation();
                     ProgramController controller = new ProgramController();
 
-                    if(!activite.equals("Selecione uma Atividade*")){
-                        if(!str_region.equals("Selecione uma Região*")){
-                            if(!neighborhood.equals("Selecione um Bairro*")){
-                                if(!street_name.isEmpty()) {
-                                    String program_name = str_program.replaceAll(" ", "_").toUpperCase();
-                                    program.setUser_id(Integer.parseInt(userId));
-                                    program.setService_program(activite);
-                                    program.setName_neighborhood(neighborhood);
-                                    program.setName_program(program_name);
-                                    program.setName_street(street_name);
-                                    program.setPoste(poste.getText().toString());
-                                    if(reference_point.isEmpty()) {
-                                        program.setReference_point("");
-                                    }else {
-                                        program.setReference_point(reference_point);
-                                    }
-                                    if (user_comment.isEmpty()) {
-                                        program.setUser_comment("");
-                                    } else {
-                                        program.setUser_comment(user_comment);
-                                    }
-                                    if(image_encode == null){
-                                        program.setImage("");
-                                    }else{
-                                        program.setImage(image_encode);
-                                    }
-                                    controller.CreateProgram(ProgramActivity.this, program, new ProgramController.VolleyCallback() {
-                                        @Override
-                                        public void onSuccess(String result) {
-                                            AlertDialog alertConnection;
-                                            AlertDialog.Builder builderConnection = new AlertDialog.Builder(ProgramActivity.this);
-                                            builderConnection.setTitle(getResources().getString(R.string.app_name));
-                                            builderConnection.setMessage("Obrigado pela sua contribuição, ele é muito importante para" + " Caruaru!");
-                                            builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    if (isLocationEnabled()) {
+                        if (!activite.equals("Selecione uma Atividade*")) {
+                            if (!str_region.equals("Selecione uma Região*")) {
+                                if (!neighborhood.equals("Selecione um Bairro*")) {
+                                    if (!street_name.isEmpty()) {
+                                        String program_name = str_program.replaceAll(" ", "_").toUpperCase();
+                                        program.setUser_id(Integer.parseInt(userId));
+                                        program.setService_program(activite);
+                                        program.setName_neighborhood(neighborhood);
+                                        program.setName_program(program_name);
+                                        program.setName_street(street_name);
+                                        program.setPoste(poste.getText().toString());
+                                        checkLocation();
+
+                                        if (reference_point.isEmpty()) {
+                                            program.setReference_point("");
+                                        } else {
+                                            program.setReference_point(reference_point);
+                                        }
+                                        if (user_comment.isEmpty()) {
+                                            program.setUser_comment("");
+                                        } else {
+                                            program.setUser_comment(user_comment);
+                                        }
+                                        if (image_encode == null) {
+                                            program.setImage("");
+                                        } else {
+                                            program.setImage(image_encode);
+                                        }
+                                        controller.CreateProgram(ProgramActivity.this, program, new ProgramController.VolleyCallback() {
+                                            @Override
+                                            public void onSuccess(String result) {
+                                                AlertDialog alertConnection;
+                                                AlertDialog.Builder builderConnection = new AlertDialog.Builder(ProgramActivity.this);
+                                                builderConnection.setTitle(getResources().getString(R.string.app_name));
+                                                builderConnection.setMessage("Obrigado pela sua contribuição, ele é muito importante para" + " Caruaru!");
+                                                builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        Intent intent = new Intent(ProgramActivity.this, MainActivity.class);
+                                                        startActivity(intent);
+                                                        finish();
+                                                    }
+                                                });
+                                                alertConnection = builderConnection.create();
+                                                alertConnection.show();
+                                            }
                                                 @Override
-                                                public void onClick(DialogInterface dialog, int which) {Intent intent = new Intent(ProgramActivity.this, MainActivity.class);
-                                                    startActivity(intent);
-                                                    finish();
+                                                public void onFailed(int result, String menssager) {
+                                                    if (result == 0) {
+                                                        CreateDialog(ProgramActivity.this, "Tempo expirado, verifique" +
+                                                                " sua internet e tente novamente...");
+                                                    }
                                                 }
                                             });
-                                            alertConnection = builderConnection.create();
-                                            alertConnection.show();
-                                            }
-                                            @Override
-                                            public void onFailed(int result, String menssager) {
-                                                if (result == 0) {
-                                                    CreateDialog(ProgramActivity.this, "Tempo expirado, verifique" +
-                                                            "sua internet e tente novamente...");
-                                                }
-                                            }
-                                        });
                                     } else {
                                         Toast.makeText(ProgramActivity.this, "Por favor, insira o nome da rua...", Toast.LENGTH_LONG).show();
                                     }
-                                }else{
+                                } else {
                                     Toast.makeText(ProgramActivity.this, "Por favor, selecione um bairro...", Toast.LENGTH_LONG).show();
-                                }
-                            }else{
+                                    }
+                                }else{
                                 Toast.makeText(ProgramActivity.this, "Por favor, selecione uma região...", Toast.LENGTH_LONG).show();
-                            }
-                    }else{
-                        Toast.makeText(ProgramActivity.this, "Por favor, selecione a atividade que você deseja...", Toast.LENGTH_LONG).show();
+                                }
+                        } else {
+                            Toast.makeText(ProgramActivity.this, "Por favor, selecione a atividade que você deseja...", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        showAlert();
                     }
-                } else{
+                } else {
                     CreateDialog(ProgramActivity.this, "Sem conexão com internet, por favor conecte-se...");
                 }
             }
@@ -427,27 +433,47 @@ public class ProgramActivity extends AppCompatActivity implements GoogleApiClien
                             startActivity(intent);
                         }
 
-                        if(position == 5){
-                            result.closeDrawer();
-                            Intent intent = new Intent(ProgramActivity.this, CompleteRegister.class);
-                            startActivity(intent);
-                        }
+                        if (userSex.equals("null")) {
+                            if (position == 5) {
+                                result.closeDrawer();
+                                Intent intent = new Intent(ProgramActivity.this, CompleteRegister.class);
+                                startActivity(intent);
+                                finish();
+                            }
 
-                        if(position == 6){
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        Digits.logout();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                            if (position == 6) {
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            FirebaseAuth.getInstance().signOut();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
                                     }
-                                }
-                            }, 3000);
-                            session.logoutUser();
-                            result.closeDrawer();
-                            Intent intent = new Intent(ProgramActivity.this, LoginActivity.class);
-                            startActivity(intent);
+                                }, 3000);
+                                session.logoutUser();
+                                result.closeDrawer();
+                                Intent intent = new Intent(ProgramActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                            }
+                        } else {
+                            if (position == 5) {
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            FirebaseAuth.getInstance().signOut();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }, 3000);
+                                session.logoutUser();
+                                result.closeDrawer();
+                                Intent intent = new Intent(ProgramActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                            }
                         }
 
                         return true;
@@ -598,12 +624,6 @@ public class ProgramActivity extends AppCompatActivity implements GoogleApiClien
         Log.d("reque", "--->>>>");
     }
 
-    private boolean checkLocationActived() {
-        if(!isLocationEnabled())
-            showAlert();
-        return isLocationEnabled();
-    }
-
     private void checkLocation(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -635,19 +655,19 @@ public class ProgramActivity extends AppCompatActivity implements GoogleApiClien
     private void showAlert() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Localização")
-                .setMessage("Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
-                        "use this app")
+                .setMessage("Sua localização está desativada.\nPor favor, ative a localização para" +
+                        " finalizar sua contribuição.")
                 .setPositiveButton("Ativar Localização", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-
                         Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         startActivity(myIntent);
                     }
                 })
-                .setNegativeButton("Continuar sem Localização", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        paramDialogInterface.dismiss();
                     }
                 });
         dialog.show();

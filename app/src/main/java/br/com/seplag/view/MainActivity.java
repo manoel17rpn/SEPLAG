@@ -1,21 +1,15 @@
 package br.com.seplag.view;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Handler;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 
-import com.digits.sdk.android.Digits;
+import com.google.firebase.auth.FirebaseAuth;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -25,16 +19,15 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import br.com.seplag.R;
-import br.com.seplag.controller.QuestionsController;
 import br.com.seplag.controller.UserController;
 import br.com.seplag.helper.InternetHelper;
 import br.com.seplag.helper.OfficeHelper;
 import br.com.seplag.helper.UserSessionHelper;
-import br.com.seplag.model.GameOptionsModel;
+import br.com.seplag.view.Intro.IntroPrograms;
+import br.com.seplag.view.Intro.Introppa;
 
 public class MainActivity extends AppCompatActivity {
     private Drawer result;
@@ -138,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void run() {
                                         try {
-                                            Digits.logout();
+                                            FirebaseAuth.getInstance().signOut();
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
@@ -155,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void run() {
                                         try {
-                                            Digits.logout();
+                                            FirebaseAuth.getInstance().signOut();
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
@@ -185,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         cardPrograms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ListProgramsActivity.class);
+                Intent intent = new Intent(MainActivity.this, IntroPrograms.class);
                 startActivity(intent);
             }
         });
@@ -193,45 +186,10 @@ public class MainActivity extends AppCompatActivity {
         cardQuestions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InternetHelper internetHelper = new InternetHelper();
-                QuestionsController controller = new QuestionsController();
-                if(internetHelper.TestConnection(MainActivity.this)){
-                    controller.ListOptions(MainActivity.this, Integer.parseInt(user_id), new QuestionsController.VolleyCallbackGetOptions() {
-                        @Override
-                        public void ListOptions(final ArrayList<GameOptionsModel> options) {
-                            if(options.size() > 0){
-                                Bundle params = new Bundle();
-                                params.putSerializable("list", options);
-                                Intent intent = new Intent(MainActivity.this, QuestionsActivity.class);
-                                intent.putExtras(params);
-                                startActivity(intent);
-                            }else{
-                                CreateDialog(MainActivity.this, "Opa! Você respondeu todas! Em breve teremos mais para você contribuir!");
-                            }
-                        }
-                    });
-                }else{
-                    CreateDialog(MainActivity.this, "Sem conexão com internet, por favor conecte-se...");
-                }
+                Intent intent = new Intent(MainActivity.this, Introppa.class);
+                startActivity(intent);
             }
         });
 
-    }
-
-
-    public void CreateDialog(Context mContext, String text){
-        final AlertDialog alertConnection;
-
-        AlertDialog.Builder builderConnection = new AlertDialog.Builder(mContext);
-        builderConnection.setTitle(getResources().getString(R.string.app_name));
-        builderConnection.setMessage(text);
-        builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        alertConnection = builderConnection.create();
-        alertConnection.show();
     }
 }

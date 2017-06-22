@@ -13,7 +13,7 @@ public class OfficeHelper {
     private String office_5 = "Gerente Virtual";
     private String office_6 = "Gerente Geral Virtual";
     private String office_7 = "Secretário Executivo Virtual";
-    private String office_8 = "Acessor Especial Virtual";
+    private String office_8 = "Assessor Especial Virtual";
     private String office_9 = "Secretário de Governo Virtual";
 
     public String getOffice_1() {

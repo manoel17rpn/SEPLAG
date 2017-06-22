@@ -1,29 +1,20 @@
 package br.com.seplag.fragments;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.seplag.R;
 import br.com.seplag.adapters.ProgramAdapter;
-import br.com.seplag.interfaces.RecyclerViewOnClickListenerHack;
 import br.com.seplag.model.Program;
-import br.com.seplag.view.ListProgramsActivity;
-import br.com.seplag.view.MainActivity;
-import br.com.seplag.view.ProgramActivity;
 
 /**
  * Created by Manoel Neto on 05/04/2017.
@@ -35,7 +26,7 @@ public class ProgramFragment extends Fragment{
     String[] Titulo = new String[]{"Cidade Limpa", "Ilumina Caruaru"};
     String[] Info = new String[]{"Atividades de limpeza do município.",
             "Manutenção da iluminação pública."};
-    int[] photos = new int[]{R.drawable.cidadelimpa, R.drawable.cidadelimpa};
+    int[] photos = new int[]{R.drawable.bg_cidadelimpa, R.drawable.bg_ilumina};
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

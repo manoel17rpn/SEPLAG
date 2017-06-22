@@ -1,14 +1,14 @@
 package br.com.seplag.view;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
-import br.com.seplag.helper.IntroHelper;
 
 import br.com.seplag.R;
+import br.com.seplag.helper.IntroHelper;
 import br.com.seplag.helper.UserSessionHelper;
+import br.com.seplag.view.Intro.IntroScreen;
 
 public class SplashActivity extends AppCompatActivity {
     private IntroHelper helper;

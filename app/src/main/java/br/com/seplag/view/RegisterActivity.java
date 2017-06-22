@@ -4,11 +4,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -17,20 +16,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.digits.sdk.android.AuthCallback;
-import com.digits.sdk.android.AuthConfig;
-import com.digits.sdk.android.Digits;
-import com.digits.sdk.android.DigitsException;
-import com.digits.sdk.android.DigitsSession;
-
 import br.com.seplag.R;
 import br.com.seplag.adapters.SpinnerAdapter;
 import br.com.seplag.controller.UserController;
 import br.com.seplag.helper.ArrayHelper;
 import br.com.seplag.helper.InternetHelper;
 import br.com.seplag.helper.OfficeHelper;
-import br.com.seplag.helper.UserSessionHelper;
 import br.com.seplag.model.UserModel;
+import br.com.seplag.view.VerifyNumber.VerifyUserNumber;
 
 public class RegisterActivity extends AppCompatActivity {
     private Spinner neighborhoods;
@@ -44,7 +37,6 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView txt_tgs1;
     private Button bt_register;
     private ArrayHelper arrayHelper = new ArrayHelper();
-    private AuthCallback authCallback;
     private UserModel user;
     private String UserName;
     private String UserNumber;
@@ -257,11 +249,13 @@ public class RegisterActivity extends AppCompatActivity {
                                                     @Override
                                                     public void onResult(boolean result) {
                                                         if(result){
-                                                            AuthConfig.Builder authConfigBuilder = new AuthConfig.Builder()
-                                                                    .withAuthCallBack(authCallback)
-                                                                    .withPhoneNumber("+55" + UserNumber);
-
-                                                            Digits.authenticate(authConfigBuilder.build());
+                                                            Intent intent = new Intent(RegisterActivity.this, VerifyUserNumber.class);
+                                                            Bundle params = new Bundle();
+                                                            params.putString("phone", UserNumber);
+                                                            params.putSerializable("user", user);
+                                                            intent.putExtras(params);
+                                                            startActivity(intent);
+                                                            finish();
                                                         }else{
                                                             Toast.makeText(RegisterActivity.this, "Ops, seu número já está cadastrado!", Toast.LENGTH_SHORT).show();
                                                         }
@@ -281,6 +275,28 @@ public class RegisterActivity extends AppCompatActivity {
                                     });
                                 }else {
                                     user.setUser_invite("");
+                                    controller.VerifyNumber(RegisterActivity.this, UserNumber, new UserController.VolleyCallbackVerifyNumber() {
+                                        @Override
+                                        public void onResult(boolean result) {
+                                            if (result) {
+                                                Intent intent = new Intent(RegisterActivity.this, VerifyUserNumber.class);
+                                                Bundle params = new Bundle();
+                                                params.putString("phone", UserNumber);
+                                                params.putSerializable("user", user);
+                                                intent.putExtras(params);
+                                                startActivity(intent);
+                                                finish();
+                                            } else {
+                                                Toast.makeText(RegisterActivity.this, "Ops, seu número já está cadastrado!", Toast.LENGTH_SHORT).show();
+                                            }
+
+                                        }
+
+                                        @Override
+                                        public void error(String error) {
+
+                                        }
+                                    });
                                 }
                             }
                         }else{
@@ -295,54 +311,6 @@ public class RegisterActivity extends AppCompatActivity {
 
             }
         });
-
-        authCallback = new AuthCallback() {
-            @Override
-            public void success(DigitsSession session, String phoneNumber) {
-                if (!phoneNumber.equals(null)) {
-                    user.setUser_phone(phoneNumber);
-
-                    final UserController controller = new UserController();
-
-                    controller.CreateUser(RegisterActivity.this, user, new UserController.VolleyCallback() {
-                        @Override
-                        public void onSuccess(String result) {
-                            if(result != null) {
-                                UserSessionHelper user_session = new UserSessionHelper(RegisterActivity.this);
-                                user_session.createUserLoginSession(user.getUser_name(), user.getUser_phone(),
-                                        user.getUser_neighborhood(), Integer.toString(100), Integer.parseInt(result),
-                                        user.getUser_office());
-                                user_session.UpdateRegisterUser("null", "null", "null", "null");
-
-                                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
-                            }
-                        }
-
-                        @Override
-                        public void onFailed(int result, String menssager) {
-                            if(result == 500){
-                                Toast.makeText(RegisterActivity.this, "Número já Cadastrado!", Toast.LENGTH_SHORT).show();
-                            }else if(result == 0){
-                                Toast.makeText(RegisterActivity.this, "Tempo expirado, tente novamente...", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-
-                }
-            }
-
-            @Override
-            public void failure(DigitsException exception) {
-                try {
-
-                } catch (Exception e) {
-                    //Do noting
-                }
-            }
-
-        };
 
     }
 

@@ -138,11 +138,14 @@ public class UserModel implements Serializable{
     @Override
     public String toString() {
         return "UserModel{" +
-                "user_id=" + user_id +
-                ", user_name='" + user_name + '\'' +
+                "user_name='" + user_name + '\'' +
                 ", user_phone='" + user_phone + '\'' +
                 ", user_neighborhood='" + user_neighborhood + '\'' +
                 ", user_street='" + user_street + '\'' +
+                ", user_score=" + user_score +
+                ", user_office='" + user_office + '\'' +
+                ", user_invite='" + user_invite + '\'' +
+                ", user_age='" + user_age + '\'' +
                 '}';
     }
 }

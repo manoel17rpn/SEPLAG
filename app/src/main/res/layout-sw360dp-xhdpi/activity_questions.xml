@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tv_areaquestions"
-            android:textSize="32sp"
+            android:textSize="24sp"
             android:textStyle="normal|bold" />
 
         <Button
@@ -35,10 +35,10 @@
             android:layout_width="match_parent"
             android:layout_height="85dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="28dp"
             android:id="@+id/answer1"
             android:textColor="#fff"
-            android:textSize="18sp"
+            android:textSize="15sp"
             android:background="@drawable/custom_selector_green"
             android:padding="4dp"/>
 
@@ -48,7 +48,7 @@
             android:layout_height="85dp"
             android:id="@+id/answer2"
             android:textColor="#fff"
-            android:textSize="18sp"
+            android:textSize="15sp"
             android:background="@drawable/custom_selector_green1"
             android:gravity="center"
             android:padding="4dp"
@@ -63,7 +63,7 @@
             android:layout_height="85dp"
             android:id="@+id/answer3"
             android:textColor="#fff"
-            android:textSize="18sp"
+            android:textSize="15sp"
             android:background="@drawable/custom_selector_green2"
             android:gravity="center"
             android:padding="4dp"
@@ -78,7 +78,7 @@
             android:layout_height="85dp"
             android:id="@+id/answer4"
             android:textColor="#fff"
-            android:textSize="18sp"
+            android:textSize="15sp"
             android:background="@drawable/custom_selector_green3"
             android:gravity="center"
             android:padding="4dp"

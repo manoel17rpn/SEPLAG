@@ -56,13 +56,13 @@ public class QuestionsController {
                             for(int i = 0; i < array.length(); i++){
                                 GameOptionsModel game = new GameOptionsModel();
                                 jsonObject = new JSONObject(array.getJSONObject(i).toString());
-                                game.setName_list(jsonObject.getString("name_list"));
+                                game.setAxis(jsonObject.getString("axis"));
                                 game.setOptions_id(jsonObject.getInt("options_id"));
                                 game.setOption_one(jsonObject.getString("option_one"));
                                 game.setOption_two(jsonObject.getString("option_two"));
                                 game.setOption_three(jsonObject.getString("option_three"));
                                 game.setOption_four(jsonObject.getString("option_four"));
-                                game.setArea_questions(jsonObject.getString("area_questions"));
+                                game.setArea_questions(jsonObject.getString("area"));
 
                                 listOptions.add(game);
                             }
@@ -126,9 +126,11 @@ public class QuestionsController {
             {
                 Map<String, String>  params = new HashMap<>();
                 params.put("user_id", Integer.toString(auxModel.getUser_id()));
-                params.put("name_list", auxModel.getName_list());
+                params.put("area", auxModel.getArea());
                 params.put("user_answers", auxModel.getUser_answers());
                 params.put("options_id", Integer.toString(auxModel.getOptions_id()));
+                params.put("latitude", auxModel.getLatitude());
+                params.put("longitude", auxModel.getLongitude());
 
                 return params;
             }
