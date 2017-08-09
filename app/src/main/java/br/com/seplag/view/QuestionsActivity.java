@@ -16,7 +16,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -40,6 +42,7 @@ import java.util.Map;
 import br.com.seplag.R;
 import br.com.seplag.controller.ProgramController;
 import br.com.seplag.controller.QuestionsController;
+import br.com.seplag.fragments.EixosFragment;
 import br.com.seplag.helper.AreasHelper;
 import br.com.seplag.helper.InternetHelper;
 import br.com.seplag.helper.UserSessionHelper;
@@ -210,13 +213,14 @@ public class QuestionsActivity extends AppCompatActivity implements GoogleApiCli
                 .withActivity(this)
                 .withToolbar(myToolbar)
                 .withSavedInstance(savedInstanceState)
-                .withSelectedItemByPosition(2)
                 .withActionBarDrawerToggle(true)
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
 
-                        if (position == 2) {
+                        if(position == 0){
+
+                        }else if (position == 2) {
                             GetAllOptions();
                             result.closeDrawer();
                         } else {
@@ -239,23 +243,22 @@ public class QuestionsActivity extends AppCompatActivity implements GoogleApiCli
             result.addItem(new PrimaryDrawerItem().withName("Mulher"));
             result.addItem(new PrimaryDrawerItem().withName("Direitos Humanos"));
         } else if (eixo.equals("eixo2")) {
-            result.addItem(new PrimaryDrawerItem().withName("Desenvolvimento Rural"));
+            result.addItem(new PrimaryDrawerItem().withName("Investimentos e Fortalecimento da Feira"));
             result.addItem(new PrimaryDrawerItem().withName("Meio Ambiente"));
             result.addItem(new PrimaryDrawerItem().withName("Emprego e Renda"));
-            result.addItem(new PrimaryDrawerItem().withName("Inovação"));
-            result.addItem(new PrimaryDrawerItem().withName("Cultura"));
+            result.addItem(new PrimaryDrawerItem().withName("Desenvolvimento Rural"));
+            result.addItem(new PrimaryDrawerItem().withName("Turismo e Cultura"));
         } else if (eixo.equals("eixo3")) {
-            result.addItem(new PrimaryDrawerItem().withName("Obras e Serviços"));
-            result.addItem(new PrimaryDrawerItem().withName("Segurança"));
-            result.addItem(new PrimaryDrawerItem().withName("Estrada e Mobilidade"));
+            result.addItem(new PrimaryDrawerItem().withName("Infraestrutura e Saneamento"));
+            result.addItem(new PrimaryDrawerItem().withName("Ordem Pública"));
+            result.addItem(new PrimaryDrawerItem().withName("Mobilidade e Transporte"));
             result.addItem(new PrimaryDrawerItem().withName("Moradia"));
             result.addItem(new PrimaryDrawerItem().withName("A Caruaru do Futuro"));
         } else if (eixo.equals("eixo4")) {
-            result.addItem(new PrimaryDrawerItem().withName("Transparência"));
-            result.addItem(new PrimaryDrawerItem().withName("Planejamento"));
-            result.addItem(new PrimaryDrawerItem().withName("Equilibrio Financeiro"));
-            result.addItem(new PrimaryDrawerItem().withName("Redução de Gastos"));
-            result.addItem(new PrimaryDrawerItem().withName("Aumento de Eficiência"));
+            result.addItem(new PrimaryDrawerItem().withName("Participação da Sociedade"));
+            result.addItem(new PrimaryDrawerItem().withName("Gestão Municipal"));
+            result.addItem(new PrimaryDrawerItem().withName("Planejamento Próximo ao Cidadão"));
+            result.addItem(new PrimaryDrawerItem().withName("Aumentar Eficiência do Município"));
         }
 
     }
@@ -317,6 +320,7 @@ public class QuestionsActivity extends AppCompatActivity implements GoogleApiCli
                         list.remove(gop);
                         //count++;
                         ChangeButtonText(count);
+
                         Toast.makeText(QuestionsActivity.this, "Você ganhou 100 pontos!", Toast.LENGTH_SHORT).show();
                     }
 
@@ -343,6 +347,7 @@ public class QuestionsActivity extends AppCompatActivity implements GoogleApiCli
                     public void onSuccess(String result) {
                         AlertDialog alertConnection;
 
+
                         if(!(listaReserva.size() > 1)){
                             AlertDialog.Builder builderConnection = new AlertDialog.Builder(QuestionsActivity.this);
                             builderConnection.setTitle(getResources().getString(R.string.app_name));
@@ -351,7 +356,7 @@ public class QuestionsActivity extends AppCompatActivity implements GoogleApiCli
                             builderConnection.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Intent intent = new Intent(QuestionsActivity.this, EixosPpa.class);
+                                    Intent intent = new Intent(QuestionsActivity.this, EixosFragment.class);
                                     startActivity(intent);
                                     finish();
                                 }
@@ -405,13 +410,6 @@ public class QuestionsActivity extends AppCompatActivity implements GoogleApiCli
             CreateDialog(QuestionsActivity.this, "Você já respondeu todas nessa área, em breve teremos mais!");
             result.setSelection(0);
         }
-        /*if(listaReserva.size() > 0){
-            list = listaReserva;
-            count = 0;
-            ChangeButtonText(count);
-        }else{
-            CreateDialog(QuestionsActivity.this, "Você já respondeu todas, em breve teremos mais!");
-        }*/
 
     }
 
@@ -461,7 +459,6 @@ public class QuestionsActivity extends AppCompatActivity implements GoogleApiCli
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
                 mLocationRequest, this);
-        Log.d("reque", "--->>>>");
     }
 
     private void checkLocation() {
@@ -486,7 +483,6 @@ public class QuestionsActivity extends AppCompatActivity implements GoogleApiCli
         if (mLocation != null) {
             latitude = mLocation.getLatitude();
             longitude = mLocation.getLongitude();
-            Log.i("Lat", "" + latitude);
         }
     }
 
@@ -530,6 +526,25 @@ public class QuestionsActivity extends AppCompatActivity implements GoogleApiCli
         super.onStop();
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.info_app, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.about_app:
+                startActivity(new Intent(QuestionsActivity.this, AboutApp.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -18,33 +19,39 @@ import android.widget.Toast;
 
 import br.com.seplag.R;
 import br.com.seplag.adapters.SpinnerAdapter;
+import br.com.seplag.controller.BaseUrl;
 import br.com.seplag.controller.UserController;
 import br.com.seplag.helper.ArrayHelper;
 import br.com.seplag.helper.InternetHelper;
 import br.com.seplag.helper.OfficeHelper;
+import br.com.seplag.helper.ShowMessage;
 import br.com.seplag.model.UserModel;
-import br.com.seplag.view.VerifyNumber.VerifyUserNumber;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegisterActivity extends AppCompatActivity {
     private Spinner neighborhoods;
     private Spinner region;
-    private EditText userName;
-    private EditText userNumber;
-    private EditText userAge;
-    private EditText userStreet;
-    private EditText userInvite;
+    private EditText edt_user_name;
+    private EditText edt_user_phone;
+    private EditText edt_user_age;
+    private EditText edt_user_street;
+    private EditText edt_user_code;
     private TextView txt_tgs;
     private TextView txt_tgs1;
     private Button bt_register;
     private ArrayHelper arrayHelper = new ArrayHelper();
     private UserModel user;
     private String UserName;
-    private String UserNumber;
+    private String UserPhone;
     private String UserStreet;
     private String UserNeighborhood;
-    private String invite;
+    private String UserCode;
     private String str_region;
-    private String age;
+    private String UserAge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +65,12 @@ public class RegisterActivity extends AppCompatActivity {
 
         neighborhoods = (Spinner) findViewById(R.id.neighborhood);
         region = (Spinner) findViewById(R.id.region);
-        userName = (EditText) findViewById(R.id.edt_name);
-        userNumber = (EditText) findViewById(R.id.edt_phoneNumber);
-        userStreet = (EditText) findViewById(R.id.edt_street);
-        userInvite = (EditText) findViewById(R.id.edt_invite);
+        edt_user_name = (EditText) findViewById(R.id.edt_name);
+        edt_user_phone = (EditText) findViewById(R.id.edt_phoneNumber);
+        edt_user_street = (EditText) findViewById(R.id.edt_street);
+        edt_user_code = (EditText) findViewById(R.id.edt_invite);
+        edt_user_age = (EditText) findViewById(R.id.edt_age);
         bt_register = (Button) findViewById(R.id.bt_finalregister);
-        userAge = (EditText) findViewById(R.id.edt_age);
         txt_tgs = (TextView) findViewById(R.id.txt_tgs);
         txt_tgs1 = (TextView) findViewById(R.id.txt_tgs1);
 
@@ -207,12 +214,11 @@ public class RegisterActivity extends AppCompatActivity {
         bt_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final UserController controller = new UserController();
-                UserName = userName.getText().toString();
-                UserNumber = userNumber.getText().toString();
-                UserStreet = userStreet.getText().toString();
-                invite = userInvite.getText().toString();
-                age = userAge.getText().toString();
+                UserName = edt_user_name.getText().toString();
+                UserPhone = edt_user_phone.getText().toString();
+                UserStreet = edt_user_street.getText().toString();
+                UserCode = edt_user_code.getText().toString();
+                UserAge = edt_user_age.getText().toString();
                 user = new UserModel();
 
                 InternetHelper internet = new InternetHelper();
@@ -220,85 +226,69 @@ public class RegisterActivity extends AppCompatActivity {
                 if(b){
                     if(!str_region.equals("Selecione uma Região*")){
                         if(!UserNeighborhood.equals("Selecione um Bairro*")){
-                            if(UserName.isEmpty()) {
-                                Toast.makeText(RegisterActivity.this, "Por favor, insira o seu nome...", Toast.LENGTH_SHORT).show();
-                            }else if(UserNumber.length() != 11){
-                                Toast.makeText(RegisterActivity.this, "Preencha corretamente o seu número de celular...", Toast.LENGTH_SHORT).show();
-                            }else if(age.isEmpty()){
-                                Toast.makeText(RegisterActivity.this, "Por favor, insira a sua idade...", Toast.LENGTH_SHORT).show();
+                            if(UserName.isEmpty()){
+                                new ShowMessage().showSnackBar(findViewById(R.id.activity_cadastro),
+                                        "Por favor, insira seu nome");
+                            }else if(UserPhone.isEmpty()){
+                                new ShowMessage().showSnackBar(findViewById(R.id.activity_cadastro),
+                                        "Número de usuário inválido, deve conter 11 dígitos");
+                            }else if(UserStreet.isEmpty()){
+                                new ShowMessage().showSnackBar(findViewById(R.id.activity_cadastro),
+                                        "Por favor, insira o nome da rua");
+                            }else if(UserAge.isEmpty()){
+                                new ShowMessage().showSnackBar(findViewById(R.id.activity_cadastro),
+                                        "Por favor, insira a idade");
                             }else{
-                                user.setUser_name(UserName);
-                                user.setUser_phone(UserNumber);
-                                user.setUser_neighborhood(UserNeighborhood);
-                                user.setUser_age(age);
-                                user.setUser_office(new OfficeHelper().getOffice_1());
-                                if(!UserStreet.isEmpty()){
-                                    user.setUser_street(UserStreet);
-                                }else{
-                                    user.setUser_street("");
+
+                                if(UserCode.isEmpty()){
+                                    UserCode = "";
                                 }
-                                if(!invite.isEmpty()){
-                                    user.setUser_invite(invite);
-                                    controller.VerifyNumber(RegisterActivity.this, invite, new UserController.VolleyCallbackVerifyNumber() {
-                                        @Override
-                                        public void onResult(boolean result) {
-                                            if(result){
-                                                Toast.makeText(RegisterActivity.this, "Número de indicação não existe...", Toast.LENGTH_SHORT).show();
-                                            }else{
-                                                controller.VerifyNumber(RegisterActivity.this, UserNumber, new UserController.VolleyCallbackVerifyNumber() {
+
+                                user.setName(UserName);
+                                user.setPhone(UserPhone);
+                                user.setStreet(UserStreet);
+                                user.setCode(UserCode);
+                                user.setNeighborhood(UserNeighborhood);
+                                user.setAge(Integer.parseInt(UserAge));
+
+                                Retrofit retrofit = buildRetrofit(BaseUrl.URL);
+                                final UserController userController = retrofit.create(UserController.class);
+                                Call<Boolean> bool = userController.verifyNumber(user.getPhone());
+                                bool.enqueue(new Callback<Boolean>() {
+                                    @Override
+                                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                                        if(response.isSuccessful()){
+                                            if(response.body()){
+                                                Call<UserModel> userModel = userController.getUser(user.getPhone());
+                                                userModel.enqueue(new Callback<UserModel>() {
                                                     @Override
-                                                    public void onResult(boolean result) {
-                                                        if(result){
-                                                            Intent intent = new Intent(RegisterActivity.this, VerifyUserNumber.class);
-                                                            Bundle params = new Bundle();
-                                                            params.putString("phone", UserNumber);
-                                                            params.putSerializable("user", user);
-                                                            intent.putExtras(params);
-                                                            startActivity(intent);
-                                                            finish();
+                                                    public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                                                        if(response.isSuccessful()){
+
                                                         }else{
-                                                            Toast.makeText(RegisterActivity.this, "Ops, seu número já está cadastrado!", Toast.LENGTH_SHORT).show();
+                                                            Log.i("Erro", "" + response.code());
                                                         }
                                                     }
 
                                                     @Override
-                                                    public void error(String error) {
+                                                    public void onFailure(Call<UserModel> call, Throwable t) {
 
                                                     }
                                                 });
                                             }
+                                        }else{
+                                            Log.i("Error", "" + response.code());
                                         }
+                                    }
 
-                                        @Override
-                                        public void error(String error) {
-                                        }
-                                    });
-                                }else {
-                                    user.setUser_invite("");
-                                    controller.VerifyNumber(RegisterActivity.this, UserNumber, new UserController.VolleyCallbackVerifyNumber() {
-                                        @Override
-                                        public void onResult(boolean result) {
-                                            if (result) {
-                                                Intent intent = new Intent(RegisterActivity.this, VerifyUserNumber.class);
-                                                Bundle params = new Bundle();
-                                                params.putString("phone", UserNumber);
-                                                params.putSerializable("user", user);
-                                                intent.putExtras(params);
-                                                startActivity(intent);
-                                                finish();
-                                            } else {
-                                                Toast.makeText(RegisterActivity.this, "Ops, seu número já está cadastrado!", Toast.LENGTH_SHORT).show();
-                                            }
+                                    @Override
+                                    public void onFailure(Call<Boolean> call, Throwable t) {
 
-                                        }
-
-                                        @Override
-                                        public void error(String error) {
-
-                                        }
-                                    });
-                                }
+                                    }
+                                });
                             }
+
+
                         }else{
                             Toast.makeText(RegisterActivity.this, "Selecione um bairro...", Toast.LENGTH_SHORT).show();
                         }
@@ -328,6 +318,15 @@ public class RegisterActivity extends AppCompatActivity {
         });
         alertConnection = builderConnection.create();
         alertConnection.show();
+    }
+
+    private Retrofit buildRetrofit(String baseurl){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseurl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        return retrofit;
     }
 
 }

@@ -36,8 +36,8 @@ public class IntroScreen extends MaterialIntroActivity {
                 .buttonsColor(R.color.accent)
                 .image(R.drawable.bg_mobiliza_intro)
                 .title("Mobiliza Caruaru")
-                .description("Seja bem-vindo a plataforma do Mobiliza Caruaru." +
-                        "\n Esta espaço foi criado para que você, cidadão, possa nos ajudar a " +
+                .description("Seja bem-vindo à plataforma do Mobiliza Caruaru." +
+                        "\n Este espaço foi criado para que você, cidadão, possa nos ajudar a " +
                         "construir a cidade que queremos.")
                 .build());
 

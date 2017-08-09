@@ -7,22 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import br.com.seplag.R;
-import br.com.seplag.controller.UserController;
-import br.com.seplag.helper.InternetHelper;
-import br.com.seplag.model.UserModel;
-import br.com.seplag.view.VerifyNumber.VerifyUserNumber;
 
 public class LoginActivity extends AppCompatActivity {
-    private UserModel user;
-    private EditText edtPhone;
     private Button bt_login;
     private Button bt_register;
-    private String phone;
-    private static final int STATE_INITIALIZED = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,57 +20,24 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        myToolbar.setTitle("Login");
+        myToolbar.setTitle("Mobiliza Caruaru");
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
 
-        edtPhone = (EditText) findViewById(R.id.edt_phone);
-        bt_login = (Button) findViewById(R.id.bt_login);
+        bt_login = (Button) findViewById(R.id.bt_enter);
         bt_register = (Button) findViewById(R.id.bt_register);
 
         bt_login.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                phone = edtPhone.getText().toString();
-
-                if(phone.length() != 11){
-                    Toast.makeText(LoginActivity.this, "Número inválido, verifique se está correto...", Toast.LENGTH_LONG).show();
-                }else{
-                    if(new InternetHelper().TestConnection(LoginActivity.this)){
-                        UserController controller = new UserController();
-
-                        user = controller.LoginUser(LoginActivity.this, phone, new UserController.VolleyCallbackGet() {
-                            @Override
-                            public void onSucess(boolean result) {
-                                if(result){
-                                    Intent intent = new Intent(LoginActivity.this, VerifyUserNumber.class);
-                                    Bundle params = new Bundle();
-                                    params.putString("phone", phone);
-                                    params.putSerializable("user", user);
-                                    intent.putExtras(params);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            }
-
-                            @Override
-                            public void onFailed(boolean error) {
-                                if(error){
-                                    Toast.makeText(LoginActivity.this, "Ops, algo saiu errado! Verique sua conexão com a Internet",
-                                            Toast.LENGTH_LONG);
-                                }
-                            }
-                        });
-                    }else{
-                        Toast.makeText(LoginActivity.this, "Sem conexão a internet, por favor, conecte-se...", Toast.LENGTH_SHORT).show();
-                    }
-                }
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, EnterActivity.class);
+                startActivity(intent);
             }
         });
 
         bt_register.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
             }

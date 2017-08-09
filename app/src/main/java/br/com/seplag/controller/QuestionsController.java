@@ -32,8 +32,8 @@ import br.com.seplag.model.GameOptionsModel;
  */
 
 public class QuestionsController {
-    private static final String URL_GET_OPTIONS = "http://usepio.com/WebServiceSeplag/public/rest-api/game-methods/options/get/";
-    private static final String URL_POST_ANSWER = "http://usepio.com/WebServiceSeplag/public/rest-api/game-methods/aux/create";
+    private static final String URL_GET_OPTIONS = "https://mobiliza.caruaru.pe.gov.br/WebServiceSeplag/public/rest-api/game-methods/options/get/";
+    private static final String URL_POST_ANSWER = "https://mobiliza.caruaru.pe.gov.br/WebServiceSeplag/public/rest-api/game-methods/aux/create";
     private RetryPolicy policy = new DefaultRetryPolicy(45000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
     private ArrayList<GameOptionsModel> listOptions;
 

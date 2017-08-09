@@ -31,12 +31,20 @@
             android:textStyle="normal|bold"
             android:text="Atrair novos investimentos e fortalecer a feira" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Escolha uma opção"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:textSize="26sp"/>
+
         <Button
             android:text="Mais professores"
             android:layout_width="match_parent"
             android:layout_height="115dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="42dp"
+            android:layout_marginTop="32dp"
             android:id="@+id/answer1"
             android:textColor="#fff"
             android:textSize="18sp"

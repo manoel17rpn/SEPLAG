@@ -30,12 +30,19 @@
             android:textSize="16sp"
             android:textStyle="normal|bold" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Escolha uma opção"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp"/>
+
         <Button
             android:text="Mais professores"
             android:layout_width="match_parent"
             android:layout_height="75dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="24dp"
             android:id="@+id/answer1"
             android:textColor="#fff"
             android:textSize="14sp"

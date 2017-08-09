@@ -4,9 +4,17 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,18 +27,16 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
-import java.util.Map;
-
 import br.com.seplag.R;
 import br.com.seplag.controller.UserController;
-import br.com.seplag.helper.InternetHelper;
-import br.com.seplag.helper.OfficeHelper;
+import br.com.seplag.fragments.EixosFragment;
+import br.com.seplag.fragments.ListProgramsFragment;
 import br.com.seplag.helper.UserSessionHelper;
-import br.com.seplag.view.Intro.IntroPrograms;
-import br.com.seplag.view.Intro.Introppa;
 
 public class MainActivity extends AppCompatActivity {
     private Drawer result;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private ViewPager mViewPager;
     private UserSessionHelper session;
     private String userName;
     private String userScore;
@@ -52,39 +58,32 @@ public class MainActivity extends AppCompatActivity {
         myToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(myToolbar);
 
-        cardQuestions = (CardView) findViewById(R.id.card_questions);
-        cardPrograms = (CardView) findViewById(R.id.card_programs);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText("Programas"));
+        tabLayout.addTab(tabLayout.newTab().setText("A Caruaru que Precisamos"));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        session = new UserSessionHelper(this);
-        Map<String, String> mapUser = session.getUserDetails();
-        userName = mapUser.get("Name");
-        userScore = mapUser.get("Score");
-        userOffice = mapUser.get("Office");
-        user_id = mapUser.get("ID");
-        userSex = mapUser.get("Sex");
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        userController = new UserController();
-        if(new InternetHelper().TestConnection(MainActivity.this)){
-            userController.VerifyUserScore(MainActivity.this, Integer.parseInt(user_id), new UserController.VolleyCallbackScore() {
-                @Override
-                public void result(final String result) {
-                    OfficeHelper officeHelper = new OfficeHelper();
-                    new_office = officeHelper.getOffice(Integer.parseInt(result));
-                    session.UpdateScore(result);
-                    if(!new_office.equals(userOffice)){
-                        userController.UpdateOffice(MainActivity.this, Integer.parseInt(user_id), new_office,
-                                new UserController.VolleyCallbackOffice() {
-                            @Override
-                            public void onResult(boolean resultOffice) {
-                                if(resultOffice){
-                                    session.UpdateOffice(new_office);
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-        }
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                mViewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -118,47 +117,30 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
 
-                        if(userSex.equals("null")){
-                            if(position == 5){
-                                result.closeDrawer();
-                                Intent intent = new Intent(MainActivity.this, CompleteRegister.class);
-                                startActivity(intent);
-                                finish();
-                            }
 
-                            if(position == 6){
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            FirebaseAuth.getInstance().signOut();
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
+                        if(position == 5){
+                            result.closeDrawer();
+                            Intent intent = new Intent(MainActivity.this, CompleteRegister.class);
+                            startActivity(intent);
+                            finish();
+                        }
+
+                        if(position == 6){
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        FirebaseAuth.getInstance().signOut();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                }, 3000);
-                                session.logoutUser();
-                                result.closeDrawer();
-                                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                                startActivity(intent);
-                            }
-                        }else{
-                            if(position == 5){
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            FirebaseAuth.getInstance().signOut();
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }, 3000);
-                                session.logoutUser();
-                                result.closeDrawer();
-                                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                                startActivity(intent);
-                            }
+                                }
+                            }, 3000);
+                            session.logoutUser();
+                            result.closeDrawer();
+                            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                            startActivity(intent);
+                            finish();
                         }
 
                         return true;
@@ -169,27 +151,63 @@ public class MainActivity extends AppCompatActivity {
         result.addItem(new DividerDrawerItem());
         result.addItem(new PrimaryDrawerItem().withName("Como Funciona?"));
         result.addItem(new PrimaryDrawerItem().withName("Prêmios"));
-        if(userSex.equals("null")){
-            result.addItem(new PrimaryDrawerItem().withName("Completar Cadastro"));
-        }
+        result.addItem(new PrimaryDrawerItem().withName("Completar Cadastro"));
         result.addItem(new PrimaryDrawerItem().withName("Sair"));
 
 
-        cardPrograms.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, IntroPrograms.class);
-                startActivity(intent);
-            }
-        });
 
-        cardQuestions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, Introppa.class);
-                startActivity(intent);
-            }
-        });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.info_app, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.about_app:
+                startActivity(new Intent(MainActivity.this, AboutApp.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position){
+                case 0:
+                    return new ListProgramsFragment();
+                default:
+                    return new EixosFragment();
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return "Programas";
+                case 1:
+                    return "A Caruaru que Precisamos";
+            }
+            return null;
+        }
     }
 }

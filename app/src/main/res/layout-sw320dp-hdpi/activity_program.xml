@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context="br.com.seplag.view.ProgramActivity">
+    tools:context="br.com.seplag.view.SolicitationsActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"

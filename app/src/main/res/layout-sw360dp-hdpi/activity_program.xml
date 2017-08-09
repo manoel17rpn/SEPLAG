@@ -5,7 +5,7 @@
     android:id="@+id/activity_program"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="br.com.seplag.view.ProgramActivity"
+    tools:context="br.com.seplag.view.SolicitationsActivity"
     android:focusable="true"
     android:focusableInTouchMode="true">
 

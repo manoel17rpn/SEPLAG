@@ -4,17 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="br.com.seplag.view.EixosPpa">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/my_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
+    tools:context="br.com.seplag.fragments.EixosFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -126,7 +116,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
-                        android:text="Obras e Serviços, Segurança, Estrada e Mobilidade, Moraria, Caruaru do Futuro"
+                        android:text="Obras e Serviços, Segurança, Estrada e Mobilidade, Moradia, Caruaru do Futuro"
                         android:layout_marginTop="4dp"
                         android:layout_marginLeft="8dp"
                         android:layout_marginBottom="4dp" />
@@ -170,5 +160,6 @@
 
         </LinearLayout>
     </ScrollView>
+
 
 </RelativeLayout>

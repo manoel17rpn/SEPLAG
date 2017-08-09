@@ -9,6 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -72,12 +75,12 @@ public class CompleteRegister extends AppCompatActivity {
         spinner_scholarity.setSelection(adapterScholarity.getCount());
 
         adapterResidents.addAll(residents);
-        adapterResidents.add("Quantas pessoas moram com você?");
+        adapterResidents.add("Quantas pessoas moram com você?*");
         spinner_residents.setAdapter(adapterResidents);
         spinner_residents.setSelection(adapterResidents.getCount());
 
         adapterIncome.addAll(income);
-        adapterIncome.add("Qual a sua renda?");
+        adapterIncome.add("Qual a sua renda?*");
         spinner_income.setAdapter(adapterIncome);
         spinner_income.setSelection(adapterIncome.getCount());
 
@@ -151,5 +154,24 @@ public class CompleteRegister extends AppCompatActivity {
         Intent intent = new Intent(CompleteRegister.this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.info_app, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.about_app:
+                startActivity(new Intent(CompleteRegister.this, AboutApp.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

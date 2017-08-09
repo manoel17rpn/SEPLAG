@@ -19,7 +19,7 @@ import br.com.seplag.R;
 import br.com.seplag.helper.ImageHelper;
 import br.com.seplag.interfaces.RecyclerViewOnClickListenerHack;
 import br.com.seplag.model.Program;
-import br.com.seplag.view.ProgramActivity;
+import br.com.seplag.view.SolicitationsActivity;
 
 /**
  * Created by Manoel Neto on 05/04/2017.
@@ -111,7 +111,7 @@ public class ProgramAdapter extends RecyclerView.Adapter<ProgramAdapter.MyViewHo
             Program program = mListProgram.get(getPosition());
             Bundle params = new Bundle();
             params.putString("name_program", program.getTitleProgram());
-            Intent intent = new Intent(mContext, ProgramActivity.class);
+            Intent intent = new Intent(mContext, SolicitationsActivity.class);
             intent.putExtras(params);
             mContext.startActivity(intent);
 

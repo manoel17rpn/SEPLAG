@@ -11,7 +11,7 @@ import agency.tango.materialintroscreen.MaterialIntroActivity;
 import agency.tango.materialintroscreen.SlideFragmentBuilder;
 import agency.tango.materialintroscreen.animations.IViewTranslation;
 import br.com.seplag.R;
-import br.com.seplag.view.EixosPpa;
+import br.com.seplag.fragments.EixosFragment;
 
 public class Introppa extends MaterialIntroActivity {
     private static final String PREF_NAME = "intro_ppa";
@@ -36,7 +36,7 @@ public class Introppa extends MaterialIntroActivity {
                 });
 
         if (!isFirstTimeLaunch()) {
-            Intent intent = new Intent(Introppa.this, EixosPpa.class);
+            Intent intent = new Intent(Introppa.this, EixosFragment.class);
             startActivity(intent);
         } else {
             addSlide(new SlideFragmentBuilder()
@@ -72,7 +72,7 @@ public class Introppa extends MaterialIntroActivity {
     public void onFinish() {
         super.onFinish();
         setFirstTimeLaunch(false);
-        startActivity(new Intent(Introppa.this, EixosPpa.class));
+        startActivity(new Intent(Introppa.this, EixosFragment.class));
         finish();
     }
 }

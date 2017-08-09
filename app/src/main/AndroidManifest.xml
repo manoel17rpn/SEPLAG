@@ -20,13 +20,27 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.MainActivity" />
-        <activity android:name=".view.LoginActivity" />
-        <activity android:name=".view.RegisterActivity" />
-        <activity android:name=".view.ListProgramsActivity" />
-        <activity android:name=".view.QuestionsActivity" />
-        <activity android:name=".view.ProgramActivity" />
-        <activity android:name=".view.SplashActivity">
+        <activity
+            android:name=".view.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.RegisterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".fragments.ListProgramsFragment"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.QuestionsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.SolicitationsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,16 +54,23 @@
             tools:replace="android:value" />
         <meta-data
             android:name="com.digits.sdk.android.ConsumerKey"
-            android:value="8BrduvhHOx6nbxK0sPsnIqtiB" />
+            android:value="TLRBEB1ohZO9uKj2jfyFuANYq" />
         <meta-data
             android:name="com.digits.sdk.android.ConsumerSecret"
-            android:value="w9g0fdSUsDqdsDPIzDlI5B9CefI7pSyx4ps2YJHHIlzafdK3XX" />
+            android:value="2LRqlqj6jNwQIKnZ30ord4DCfOTSH9SAlxweNW4xyeEJA5SKy5" />
 
-        <activity android:name=".view.HowWorks" />
-        <activity android:name=".view.CompleteRegister" />
-        <activity android:name=".view.AwardsActivity" />
+        <activity
+            android:name=".view.HowWorks"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.CompleteRegister"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.AwardsActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.Intro.IntroScreen"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Intro" />
 
         <!--
@@ -63,6 +84,12 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/icon_notification" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
 
         <service android:name=".firebase.MyFirebaseMessagingService">
             <intent-filter>
@@ -84,15 +111,22 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".view.EixosPpa" />
+        <activity
+            android:name=".fragments.EixosFragment"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.Intro.Introppa"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Intro" />
         <activity
             android:name=".view.Intro.IntroPrograms"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Intro" />
-        <activity android:name=".view.VerifyNumber.VerifyUserNumber" />
-        <activity android:name=".view.VerifyNumber.VerifyUserNumberRegister"></activity>
+        <activity
+            android:name=".view.VerifyUserNumber"
+            android:screenOrientation="portrait" />
+        <activity android:name=".view.AboutApp" />
+        <activity android:name=".view.EnterActivity"></activity>
     </application>
 
 </manifest>

@@ -15,11 +15,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "493059925887-vog3fvsem1dhhcpkqedd9tb2g5ujgdmj.apps.googleusercontent.com",
+          "client_id": "493059925887-nupg36ca6la0u6nv5ci4fj8h9mrtl300.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "br.com.seplag",
-            "certificate_hash": "b9e6200b50a9ec4f91d6597420fbd9b01cca3d5f"
+            "certificate_hash": "ed85d821e47804dced0c964ff132f91f560fad94"
+          }
+        },
+        {
+          "client_id": "493059925887-6206l4ttnt59aslrd7b1e8o4di9b7m42.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.seplag",
+            "certificate_hash": "8b9f65a4b5c3ee440b1bf887390bb1e9f49041af"
           }
         },
         {

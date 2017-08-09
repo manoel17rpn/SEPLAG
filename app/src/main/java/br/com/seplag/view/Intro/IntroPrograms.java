@@ -12,7 +12,7 @@ import agency.tango.materialintroscreen.MessageButtonBehaviour;
 import agency.tango.materialintroscreen.SlideFragmentBuilder;
 import agency.tango.materialintroscreen.animations.IViewTranslation;
 import br.com.seplag.R;
-import br.com.seplag.view.ListProgramsActivity;
+import br.com.seplag.fragments.ListProgramsFragment;
 
 public class IntroPrograms extends MaterialIntroActivity {
     private static final String PREF_NAME = "intro_programs";
@@ -36,7 +36,7 @@ public class IntroPrograms extends MaterialIntroActivity {
                 });
 
         if (!isFirstTimeLaunch()) {
-            Intent intent = new Intent(IntroPrograms.this, ListProgramsActivity.class);
+            Intent intent = new Intent(IntroPrograms.this, ListProgramsFragment.class);
             startActivity(intent);
         } else {
             addSlide(new SlideFragmentBuilder()
@@ -58,7 +58,7 @@ public class IntroPrograms extends MaterialIntroActivity {
                         @Override
                         public void onClick(View v) {
                             setFirstTimeLaunch(false);
-                            startActivity(new Intent(IntroPrograms.this, ListProgramsActivity.class));
+                            startActivity(new Intent(IntroPrograms.this, ListProgramsFragment.class));
                             finish();
                         }
                     }, "Contribuir"));
@@ -78,7 +78,7 @@ public class IntroPrograms extends MaterialIntroActivity {
     public void onFinish() {
         super.onFinish();
         setFirstTimeLaunch(false);
-        startActivity(new Intent(IntroPrograms.this, ListProgramsActivity.class));
+        startActivity(new Intent(IntroPrograms.this, ListProgramsFragment.class));
         finish();
     }
 }

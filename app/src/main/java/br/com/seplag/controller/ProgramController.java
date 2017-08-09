@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.seplag.model.AllProgramsModel;
-import br.com.seplag.model.ProgramModel;
+import br.com.seplag.model.SolicitationsModel;
 
 /**
  * Created by Manoel Neto on 05/05/2017.
@@ -32,11 +32,11 @@ import br.com.seplag.model.ProgramModel;
 
 public class ProgramController {
 
-    private static final String URL_POST = "http://usepio.com/WebServiceSeplag/public/rest-api/programs-methods/create";
-    private static final String URL_GET_PROGRAMS = "http://usepio.com/WebServiceSeplag/public/rest-api/programs-methods/allPrograms";
+    private static final String URL_POST = "https://mobiliza.caruaru.pe.gov.br/WebServiceSeplag/public/rest-api/programs-methods/create";
+    private static final String URL_GET_PROGRAMS = "https://mobiliza.caruaru.pe.gov.br/WebServiceSeplag/public/rest-api/programs-methods/allPrograms";
     RetryPolicy policy = new DefaultRetryPolicy(45000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
-    public void CreateProgram(Context mContext, final ProgramModel program, final VolleyCallback callback){
+    public void CreateProgram(Context mContext, final SolicitationsModel program, final VolleyCallback callback){
         final ProgressDialog dialog = ProgressDialog.show(mContext, "Carregando", "Estamos processando sua contribuição, por favor aguarde...", true);
 
         RequestQueue queue = Volley.newRequestQueue(mContext);
@@ -69,7 +69,7 @@ public class ProgramController {
             protected Map<String, String> getParams()
             {
                 Map<String, String>  params = new HashMap<>();
-                params.put("user_id", Integer.toString(program.getUser_id()));
+                /*params.put("user_id", Integer.toString(program.getUser_id()));
                 params.put("name_program", program.getName_program());
                 params.put("service_program", program.getService_program());
                 params.put("name_neighborhood", program.getName_neighborhood());
@@ -79,7 +79,7 @@ public class ProgramController {
                 params.put("latitude", program.getLatitude());
                 params.put("longitude", program.getLongitude());
                 params.put("image", program.getImage());
-                params.put("barramento", program.getPoste());
+                params.put("barramento", program.getPoste());*/
 
 
                 return params;

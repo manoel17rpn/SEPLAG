@@ -5,16 +5,7 @@
     android:id="@+id/activity_list_programs"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="br.com.seplag.view.ListProgramsActivity">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/my_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+    tools:context="br.com.seplag.fragments.ListProgramsFragment">
 
     <RelativeLayout
         android:id="@+id/rl_fragment_container"

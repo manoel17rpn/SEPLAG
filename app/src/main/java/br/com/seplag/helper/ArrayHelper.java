@@ -1,5 +1,7 @@
 package br.com.seplag.helper;
 
+import java.util.Arrays;
+
 /**
  * Created by Manoel Neto on 30/04/2017.
  */
@@ -82,22 +84,27 @@ public class ArrayHelper {
     };
 
     public String[] getNeighborhoodsUrbanArea() {
+        Arrays.sort(NeighborhoodsUrbanArea);
         return NeighborhoodsUrbanArea;
     }
 
     public String[] getDistrictOne() {
+        Arrays.sort(DistrictOne);
         return DistrictOne;
     }
 
     public String[] getDistrictTwo() {
+        Arrays.sort(DistrictTwo);
         return DistrictTwo;
     }
 
     public String[] getDistrictThree() {
+        Arrays.sort(DistrictThree);
         return DistrictThree;
     }
 
     public String[] getDistrictFour() {
+        Arrays.sort(DistrictFour);
         return DistrictFour;
     }
 

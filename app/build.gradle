@@ -1,14 +1,22 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'mobilizacaruaru'
+            keyPassword 'mobiliza2017'
+            storeFile file('/Users/manoelramos/AndroidStudioProjects/SEPLAG/mobiliza.jks')
+            storePassword 'mobiliza2017'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "br.com.seplag"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 8
+        versionName "1.0.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -16,19 +24,21 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable false
+            signingConfig signingConfigs.config
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile('com.mikepenz:materialdrawer:5.9.1@aar') {
         transitive = true
     }
-    compile("com.firebase:firebase-jobdispatcher-with-gcm-dep:0.6.0") {
+    compile('com.firebase:firebase-jobdispatcher-with-gcm-dep:0.6.0') {
         exclude module: "play-services-gcm"
     }
     compile 'com.android.support:appcompat-v7:25.3.1'
@@ -44,8 +54,13 @@ dependencies {
     compile 'com.firebase:digitsmigrationhelpers:0.1.1'
     compile 'com.google.firebase:firebase-auth:11.0.1'
     compile 'com.google.firebase:firebase-core:11.0.1'
+    compile 'com.orhanobut:hawk:2.0.1'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     testCompile 'junit:junit:4.12'
 }
+
+
 
 
 

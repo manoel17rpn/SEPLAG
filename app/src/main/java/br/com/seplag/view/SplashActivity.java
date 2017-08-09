@@ -28,8 +28,10 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
 
+                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                startActivity(intent);
 
-                if(session.isUserLoggedIn()){
+                /*if(session.isUserLoggedIn()){
                     Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                     startActivity(intent);
                 }else{
@@ -40,7 +42,7 @@ public class SplashActivity extends AppCompatActivity {
                         Intent intent = new Intent(SplashActivity.this, IntroScreen.class);
                         startActivity(intent);
                     }
-                }
+                }*/
 
                 finish();
             }

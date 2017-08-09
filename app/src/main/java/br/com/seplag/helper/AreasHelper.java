@@ -23,7 +23,7 @@ public class AreasHelper {
                 areaPPA = "Desenvolvimento Social";
             }
             if (position == 7) {
-                areaPPA = "Mulher";
+                areaPPA = "Participação da Mulher";
             }
             if (position == 8) {
                 areaPPA = "Direitos Humanos";
@@ -32,7 +32,7 @@ public class AreasHelper {
 
         if (eixo.equals("eixo2")) {
             if (position == 3) {
-                areaPPA = "Desenvolvimento Rural";
+                areaPPA = "Investimentos e Fortalecimento da Feira";
             }
             if (position == 4) {
                 areaPPA = "Meio Ambiente";
@@ -41,22 +41,22 @@ public class AreasHelper {
                 areaPPA = "Emprego e Renda";
             }
             if (position == 6) {
-                areaPPA = "Inovação";
+                areaPPA = "Desenvolvimento Rural";
             }
             if (position == 7) {
-                areaPPA = "Cultura";
+                areaPPA = "Turismo e Cultura";
             }
         }
 
         if (eixo.equals("eixo3")) {
             if (position == 3) {
-                areaPPA = "Obras e Serviços";
+                areaPPA = "Infraestrutura e Saneamento";
             }
             if (position == 4) {
-                areaPPA = "Segurança";
+                areaPPA = "Ordem Pública";
             }
             if (position == 5) {
-                areaPPA = "Estrada e Mobilidade";
+                areaPPA = "Mobilidade e Transporte";
             }
             if (position == 6) {
                 areaPPA = "Moradia";
@@ -68,19 +68,16 @@ public class AreasHelper {
 
         if (eixo.equals("eixo4")) {
             if (position == 3) {
-                areaPPA = "Transparência";
+                areaPPA = "Participação da Sociedade";
             }
             if (position == 4) {
-                areaPPA = "Planejamento";
+                areaPPA = "Gestão Municipal";
             }
             if (position == 5) {
-                areaPPA = "Equilibrio Financeiro";
+                areaPPA = "Planejamento Próximo ao Cidadão";
             }
             if (position == 6) {
-                areaPPA = "Redução de Gastos";
-            }
-            if (position == 7) {
-                areaPPA = "Aumento de Eficiência";
+                areaPPA = "Aumentar Eficiência do Município";
             }
         }
 

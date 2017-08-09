@@ -30,6 +30,13 @@
             android:textSize="24sp"
             android:textStyle="normal|bold" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Escolha uma opção"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp"/>
+
         <Button
             android:text="Mais professores"
             android:layout_width="match_parent"
